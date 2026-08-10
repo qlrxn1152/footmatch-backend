@@ -6,6 +6,7 @@ import com.dhoon.footmatch.team.service.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -22,7 +23,8 @@ public class TeamController {
 
     @PostMapping("/api/teams")
     public ResponseEntity<TeamCreateResponse> createTeam(@Valid @RequestBody TeamCreateRequest request, @AuthenticationPrincipal Jwt jwt) {
-        teamService.createTeam(request);
+        TeamCreateResponse response = teamService.createTeam(request, Long.valueOf(jwt.getSubject()));
 
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

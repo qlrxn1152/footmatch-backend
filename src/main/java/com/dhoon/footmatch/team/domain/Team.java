@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Team {
 
-    private final int TEAM_RATING = 1000;
+    private static final int TEAM_RATING = 1000;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "team_id")

@@ -16,4 +16,8 @@ public class TeamCreateRequest {
     @Size(min = 2, max = 20)
     private String teamName;
 
+    public static  TeamCreateRequest of(String teamName) {
+        return new TeamCreateRequest(teamName);
+    }
+
 }

@@ -31,12 +31,12 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public TeamCreateResponse createTeam(TeamCreateRequest request, Long memberId) {
-        String teamName = request.getTeamName();
+        String normalizedTeamName = request.getTeamName().strip();
 
         Member member = validateMemberCanCreateTeam(memberId);
-        validateTeamNameForCreate(teamName);
+        validateTeamNameForCreate(normalizedTeamName);
 
-        Team team = createTeamAndAssignLeader(teamName, member);
+        Team team = createTeamAndAssignLeader(normalizedTeamName, member);
         return TeamCreateResponse.of(team);
     }
 
