@@ -119,8 +119,10 @@
 
 ### 호출 흐름
 
-`TeamController.createTeam(TeamCreateRequest, MemberId)`
-→ `TeamService.createTeam(TeamCreateRequest, MemberId)`
+`TeamController.createTeam(TeamCreateRequest, JWT)`
+→ `JWT에서 memberId 추출`
+→ `TeamService.createTeam(TeamCreateRequest, memberId)`
+
 
 ### 처리 과정
 
