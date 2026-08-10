@@ -32,7 +32,6 @@ public class MemberController {
 
     @GetMapping("/api/members/me")
     public ResponseEntity<MemberMeResponse> getMe(@AuthenticationPrincipal Jwt jwt) {
-
         Long memberId = Long.valueOf(jwt.getSubject());
 
         MemberMeResponse response = memberService.getMe(memberId);

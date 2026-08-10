@@ -28,7 +28,6 @@ public class MemberValidator {
     public void validateUsernameContainStrip(String username) {
         if (!username.strip().equals(username)) {
             throw new InvalidUsernameException();
-
         }
     }
 

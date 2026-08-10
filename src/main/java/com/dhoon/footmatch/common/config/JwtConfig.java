@@ -1,6 +1,6 @@
 package com.dhoon.footmatch.common.config;
 
-import io.github.qlrxn1152.footballv3.auth.jwt.JwtProperties;
+import com.dhoon.footmatch.auth.jwt.JwtProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
