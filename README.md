@@ -1,20 +1,5 @@
 # FootMatch
 
-축구 팀 간 매칭을 지원하는 서비스입니다.
-
-## 기술 스택
-
-### Backend
-
-* Java
-* Spring Boot
-* Spring Security
-* Spring Data JPA
-* MySQL
-
-### Frontend
-
-* Flutter
 
 ---
 
