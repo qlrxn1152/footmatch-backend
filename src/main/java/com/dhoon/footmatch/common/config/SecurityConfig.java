@@ -1,0 +1,48 @@
+package com.dhoon.footmatch.common.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/members", "/api/auth/login").permitAll() // 회원가입이랑 로그인 요청은 JWT 토큰이 없어도 됨.
+                        .requestMatchers(HttpMethod.GET, "/api/teams", "/api/teams/{teamId}").permitAll() // 팀 목록조회, 팀 상세페이지는 모든유저가 가능
+                        .requestMatchers(HttpMethod.GET, "/api/matches/pending", "/api/matches/matched", "/api/matches/completed").permitAll() // 매치들 조회는 누구나 가능
+                        .requestMatchers(HttpMethod.GET, "/api/teams/{teamId}/matches/pending", "/api/teams/{teamId}/matches/matched" ,"/api/teams/{teamId}/matches/completed").permitAll() // 특정 팀의 매치들은 누구나 조회 가능
+                        .requestMatchers(HttpMethod.GET, "/api/teams/rankings").permitAll() // 팀 순위는 누구나 조회 가능
+                        .requestMatchers(HttpMethod.GET, "/api/matches/{matchId}").permitAll() // 매치 상세 조회는 누구나 가능
+                        .anyRequest().authenticated() // 나머지는 JWT 토큰 필요
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+
+        return http.build();
+    }
+
+    private JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
+
+        authoritiesConverter.setAuthoritiesClaimName("role");
+        authoritiesConverter.setAuthorityPrefix("ROLE_");
+
+        JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
+
+        authenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
+
+        return authenticationConverter;
+    }
+}

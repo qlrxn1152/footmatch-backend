@@ -1,0 +1,67 @@
+package com.dhoon.footmatch.member.domain;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Table(name = "members")
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Member {
+
+    private static final int MEMBER_INIT_RATING = 1500;
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
+    private Long id;
+
+    @Column(nullable = false, unique = true, length = 12)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "member_role", nullable = false)
+    private MemberRole role; // ADMIN , USER
+
+    @Column(name = "member_rating")
+    private int rating;
+
+    @Column(name = "member_total_goal_count")
+    private int totalGoalCount;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+
+
+
+
+    private Member(String username, String password) {
+        this.username = username;
+        this.password = password;
+
+        this.role = MemberRole.USER;
+        this.rating = MEMBER_INIT_RATING;
+        this.totalGoalCount = 0;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public static Member signup(String username, String encodedPassword) {
+        return new Member(username, encodedPassword);
+    }
+
+    public void addGoals(int goalCount) {
+        this.totalGoalCount += goalCount;
+
+        this.rating += (goalCount * 10);
+
+        // 골 넣은 수 만큼 .. 레이팅 반영 => 골수 x 10 점 반영
+    }
+
+}

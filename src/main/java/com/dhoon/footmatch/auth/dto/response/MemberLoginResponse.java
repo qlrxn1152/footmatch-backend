@@ -1,0 +1,37 @@
+package com.dhoon.footmatch.auth.dto.response;
+
+import com.dhoon.footmatch.auth.jwt.AccessToken;
+import com.dhoon.footmatch.member.domain.Member;
+import com.dhoon.footmatch.member.domain.MemberRole;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class MemberLoginResponse {
+
+    private static final String TOKEN_TYPE = "Bearer";
+
+    private Long memberId;
+    private String username;
+    private MemberRole role;
+
+    private String accessToken;
+    private String tokenType;
+    private long expiresIn;
+
+    public static MemberLoginResponse of(Member member, AccessToken accessToken) {
+        return new MemberLoginResponse(
+                member.getId(),
+                member.getUsername(),
+                member.getRole(),
+                accessToken.getValue(),
+                TOKEN_TYPE,
+                accessToken.getExpiresIn()
+        );
+    }
+
+}
