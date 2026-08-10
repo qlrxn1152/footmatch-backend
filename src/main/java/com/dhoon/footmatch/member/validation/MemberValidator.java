@@ -25,6 +25,11 @@ public class MemberValidator {
                 .orElseThrow(NotFoundMemberException::new);
     }
 
+    public void validateExistMember(Long memberId) {
+        memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+    }
+
     public void validateUsernameContainStrip(String username) {
         if (!username.strip().equals(username)) {
             throw new InvalidUsernameException();

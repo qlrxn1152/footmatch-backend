@@ -72,7 +72,7 @@
 
 ---
 
-# Authentication
+# Auth
 
 ## 로그인
 
@@ -104,5 +104,48 @@
 * `InvalidLoginPasswordException`
 
     * 입력한 비밀번호가 저장된 비밀번호와 일치하지 않는 경우
+
+---
+
+# Team
+
+## 팀 생성
+
+### API
+
+| Method | URL          | 설명   |
+| ------ |--------------|------|
+| POST   | `/api/teams` | 팀 생성 |
+
+### 호출 흐름
+
+`TeamController.createTeam(TeamCreateRequest, MemberId)`
+→ `TeamService.createTeam(TeamCreateRequest, MemberId)`
+
+### 처리 과정
+
+1. 로그인한 회원이 팀 이름을 입력합니다.
+2. 회원이 존재하는지 확인합니다.
+3. 요청한 회원이 이미 다른 팀에 속해있는지 확인합니다.
+4. 팀 이름 형식을 검증합니다.
+    * 길이: `2 ~ 20자`
+5. 입력한 팀 이름이 이미 존재하는지 확인합니다.
+6. 모든 검증을 통과하면 Team을 생성하여 저장합니다.
+7. 생성한 팀과 요청한 회원을 이용해 TeamMember를 생성하여 저장합니다.
+8. 해당 회원은 팀의 LEADER로 등록됩니다.
+
+### 발생 가능한 예외
+
+* `AlreadyJoinedTeamException`
+
+    * 회원이 이미 팀에 속해있는 경우
+
+* `InvalidTeamNameException`
+
+    * 입력한 팀 이름이 길이 조건을 만족하지 않는 경우
+
+* `DuplicateTeamNameException`
+
+    * 입력한 팀 이름이 이미 존재하는경우
 
 ---
