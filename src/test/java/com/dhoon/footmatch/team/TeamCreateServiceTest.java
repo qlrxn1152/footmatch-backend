@@ -105,7 +105,7 @@ class TeamCreateServiceTest {
     }
 
     @Test
-    @DisplayName(value = "팀 이름이 10글자 초과면, 팀 생성에 실패해야한다.")
+    @DisplayName(value = "팀 이름이 20글자 초과면, 팀 생성에 실패해야한다.")
     void createTeam_fail_invalid_teamName_length_long() throws Exception {
         // given
         MemberCreateResponse leaderMember = memberFixture.signupMember("userA", "1234");
