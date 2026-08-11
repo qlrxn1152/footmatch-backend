@@ -3,6 +3,7 @@ package com.dhoon.footmatch.team.controller;
 import com.dhoon.footmatch.team.dto.request.TeamCreateRequest;
 import com.dhoon.footmatch.team.dto.request.TeamNameChangeRequest;
 import com.dhoon.footmatch.team.dto.response.TeamCreateResponse;
+import com.dhoon.footmatch.team.dto.response.TeamDetailResponse;
 import com.dhoon.footmatch.team.dto.response.TeamNameChangeResponse;
 import com.dhoon.footmatch.team.service.TeamService;
 import jakarta.validation.Valid;
@@ -31,6 +32,13 @@ public class TeamController {
     @PatchMapping("/api/teams/{teamId}/name")
     public ResponseEntity<TeamNameChangeResponse> changeTeamName(@Valid @RequestBody TeamNameChangeRequest request, @AuthenticationPrincipal Jwt jwt, @PathVariable Long teamId) {
         TeamNameChangeResponse response = teamService.changeTeamName(request, Long.valueOf(jwt.getSubject()), teamId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/api/teams/{teamId}")
+    public ResponseEntity<TeamDetailResponse> getTeam(@PathVariable Long teamId) {
+        TeamDetailResponse response = teamService.getTeam(teamId);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

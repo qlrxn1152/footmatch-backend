@@ -39,5 +39,11 @@ public class TeamValidator {
                 .orElseThrow(NotFoundTeamException::new);
     }
 
+    public Team findTeamWithLeaderMemberOrThrow(Long teamId) {
+        return teamRepository.findByTeamIdWithLeaderMember(teamId)
+                .orElseThrow(NotFoundTeamException::new);
+    }
+
+
 
 }

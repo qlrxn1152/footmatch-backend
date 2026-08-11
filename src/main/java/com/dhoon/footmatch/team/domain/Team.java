@@ -1,5 +1,6 @@
 package com.dhoon.footmatch.team.domain;
 
+import com.dhoon.footmatch.member.domain.Member;
 import com.dhoon.footmatch.teammember.domain.TeamMember;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -29,14 +30,20 @@ public class Team {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    private Team(String teamName) {
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "leader_member_id", nullable = false, unique = true)
+    private Member leaderMember;
+
+
+    private Team(String teamName, Member leaderMember) {
         this.teamName = teamName;
         this.rating = TEAM_RATING;
+        this.leaderMember = leaderMember;
         this.createdAt = LocalDateTime.now();
     }
 
-    public static Team createTeam(String teamName) {
-        return new Team(teamName);
+    public static Team createTeam(String teamName, Member leaderMember) {
+        return new Team(teamName, leaderMember);
     }
 
     public void changeTeamName(String newTeamName) {

@@ -7,6 +7,7 @@ import com.dhoon.footmatch.team.domain.TeamRole;
 import com.dhoon.footmatch.team.dto.request.TeamCreateRequest;
 import com.dhoon.footmatch.team.dto.request.TeamNameChangeRequest;
 import com.dhoon.footmatch.team.dto.response.TeamCreateResponse;
+import com.dhoon.footmatch.team.dto.response.TeamDetailResponse;
 import com.dhoon.footmatch.team.dto.response.TeamNameChangeResponse;
 import com.dhoon.footmatch.team.exception.exceptions.AlreadyJoinedTeamException;
 import com.dhoon.footmatch.team.exception.exceptions.NotTeamLeaderException;
@@ -19,7 +20,6 @@ import com.dhoon.footmatch.teammember.validation.exceptions.NotJoinedTeamExcepti
 import com.dhoon.footmatch.teammember.validation.exceptions.NotTeamMemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,26 +63,15 @@ public class TeamServiceImpl implements TeamService {
 
 
 
+    @Override
+    @Transactional(readOnly = true)
+    public TeamDetailResponse getTeam(Long teamId) {
+        Team team = teamValidator.findTeamWithLeaderMemberOrThrow(teamId); // leaderMember 도 같이
 
+        long teamMemberCount = teamMemberRepository.countByTeamId(teamId);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return TeamDetailResponse.of(team, teamMemberCount);
+    }
 
 
 
@@ -92,7 +81,7 @@ public class TeamServiceImpl implements TeamService {
     // ================================================================== //
 
     private Team createTeamAndAssignLeader(String teamName, Member member) {
-        Team team = teamRepository.save(Team.createTeam(teamName));
+        Team team = teamRepository.save(Team.createTeam(teamName, member));
         teamMemberRepository.save(TeamMember.createLeader(team, member));
         return team;
     }
@@ -111,9 +100,11 @@ public class TeamServiceImpl implements TeamService {
 
     private Member validateMemberCanCreateTeam(Long memberId) {
         Member member = memberValidator.validateExistMemberAndReturn(memberId);
+
         if (teamMemberRepository.existsByMemberId(memberId)) {
             throw new AlreadyJoinedTeamException();
         }
+
         return member;
     }
 
@@ -122,6 +113,7 @@ public class TeamServiceImpl implements TeamService {
         memberValidator.validateExistMember(memberId);
         Team team = teamValidator.validateExistTeamAndReturn(teamId);
 
+
         TeamMember teamMember = teamMemberRepository.findByMemberId(memberId)
                 .orElseThrow(NotJoinedTeamException::new);
 
@@ -129,9 +121,10 @@ public class TeamServiceImpl implements TeamService {
             throw new NotTeamMemberException();
         }
 
-        if (teamMember.getTeamRole() != TeamRole.LEADER) {
+        if (!team.getLeaderMember().getId().equals(memberId)) {
             throw new NotTeamLeaderException();
         }
+
 
         return team;
     }

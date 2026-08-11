@@ -208,3 +208,67 @@
 - `DuplicateTeamNameException`
     - 다른 팀이 동일한 팀 이름을 이미 사용하고 있는 경우
 ---
+
+## 팀 상세페이지
+
+### API
+
+| Method | URL                   | 설명      |
+|--------|-----------------------|---------|
+| GET    | `/api/teams/{teamId}` | 팀 상세페이지 |
+
+
+### 명세
+
+- 누구나 해당 기능을 호출할 수 있습니다.
+
+### 검증
+
+- 요청한 `teamId`에 해당하는 팀이 존재하는지 확인합니다.
+- 팀이 존재하지 않으면 `NotFoundTeamException`을 발생시킵니다.
+
+### 반환값
+
+- 팀 ID
+- 팀 이름
+- 팀장 ID
+- 팀장 이름
+- 팀 레이팅
+- 팀원 수
+
+
+### 호출 흐름
+
+`TeamController.getTeam(teamId)`
+→ `TeamService.getTeam(teamId)`
+
+
+
+### 처리 과정
+
+1. 사용자가 팀 상세페이지를 조회합니다.
+2. `@PathVariable`로 전달받은 `teamId`를 이용해 팀을 조회합니다.
+3. 팀이 존재하지 않으면 `NotFoundTeamException`을 발생시킵니다.
+4. 조회한 팀의 상세 정보를 DTO 형태로 반환합니다.
+
+
+### 발생 가능한 예외
+
+- `NotFoundTeamException`
+    - 요청한 `teamId`에 해당하는 팀이 존재하지 않는 경우
+
+---
+
+# Domain Policy
+
+## Team
+
+### 팀장 정보 기준
+
+- 팀장 여부 검증은 `Team.leaderMember`를 기준으로 수행합니다.
+- `TeamMember`는 팀장 여부의 기준으로 사용하지 않습니다.
+
+### 팀 소속 정보 기준
+
+- 회원의 팀 소속 여부는 `TeamMember`를 기준으로 판단합니다.
+- 회원이 특정 팀에 속해있는지 여부도 `TeamMember`를 통해 확인합니다.
