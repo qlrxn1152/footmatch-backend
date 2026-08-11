@@ -36,7 +36,7 @@ public class TeamNameChangeTest {
     @Autowired private TeamMemberRepository teamMemberRepository;
     @Autowired private TeamRepository teamRepository;
 
-    public TeamNameChangeRequest createTeamNameChangeRequest(String teamName) {
+    private TeamNameChangeRequest createTeamNameChangeRequest(String teamName) {
         return TeamNameChangeRequest.of(teamName);
     }
 
@@ -140,7 +140,7 @@ public class TeamNameChangeTest {
 
     @Test
     @DisplayName(value = "팀이름변경_실패_팀이름사이즈_초과")
-    void changeTeamName_fail_invalid_team_name_full() throws Exception {
+    void changeTeamName_fail_invalid_team_name_long() throws Exception {
         // given
         TeamFixtureData teamFixtureData = teamFixture.createTeamWithMember("userA", "teamA");
 
