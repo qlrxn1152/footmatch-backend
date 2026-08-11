@@ -49,4 +49,10 @@ public class Team {
     public void changeTeamName(String newTeamName) {
         this.teamName = newTeamName;
     }
+
+    public void changeTeamLeader(Member newLeaderMember) {
+        this.leaderMember = newLeaderMember;
+    }
+
+
 }

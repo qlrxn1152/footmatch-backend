@@ -1,10 +1,7 @@
 package com.dhoon.footmatch.team.validation;
 
 import com.dhoon.footmatch.team.domain.Team;
-import com.dhoon.footmatch.team.exception.exceptions.DuplicateTeamNameException;
-import com.dhoon.footmatch.team.exception.exceptions.InvalidTeamNameException;
-import com.dhoon.footmatch.team.exception.exceptions.NotFoundTeamException;
-import com.dhoon.footmatch.team.exception.exceptions.SameTeamNameException;
+import com.dhoon.footmatch.team.exception.exceptions.*;
 import com.dhoon.footmatch.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -45,5 +42,15 @@ public class TeamValidator {
     }
 
 
+    public void validateCheckTeamLeader(Team team, Long memberId) {
+        if (!team.getLeaderMember().getId().equals(memberId)) {
+            throw new NotTeamLeaderException();
+        }
+    }
 
+    public void validateCheckSameTeamLeader(Long currentLeaderMemberId, Long newLeaderMemberId) {
+        if ( currentLeaderMemberId.equals(newLeaderMemberId) ) {
+            throw new SameTeamLeaderException();
+        }
+    }
 }

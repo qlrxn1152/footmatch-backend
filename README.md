@@ -259,14 +259,87 @@
 
 ---
 
+
+## 팀장 변경
+
+### API
+
+| Method | URL                          | 설명    |
+|--------|------------------------------|-------|
+| PATCH  | `/api/teams/{teamId}/leader` | 팀장 변경 |
+
+
+### 권한
+
+- 현재 팀장만 팀장을 위임할 수 있습니다.
+
+
+### 검증
+
+- 요청한 회원이 존재하는가 ? 
+- 팀이 존재하는가 ?
+- 요청자가 해당 팀의 팀원인가 ? 
+- 요청자가 해당 팀의 팀장인가 ?
+- 새로운 팀장이 될 회원이 존재하는가 ? 
+- 새로운 팀장이 해당 팀의 팀원인가 ? 
+- 현재 팀장과 새로운 팀장이 동일한 회원이 아닌가 ?
+
+
+
+### 호출 흐름
+
+`TeamController.transferLeader(teamId, Jwt, TeamLeaderTransferRequest)`
+→ `JWT에서 현재팀장 memberId 추출`
+→ `TeamService.transferLeader(teamId, Jwt MemberId, TeamLeaderTransferRequest)`
+
+
+
+### 처리 과정
+
+1. 요청한 회원이 새로운 팀장이 될 회원을 입력
+2. 요청한 회원이 존재하는 회원이 맞는지
+3. 해당 팀이 존재하는지
+4. 요청자는 해당 팀의 팀원이 맞는지
+5. 요청자는 해당 팀의 팀장이 맞는지
+6. 새로운 팀장이 될 회원은 존재하는지 
+7. 새로운 팀장이 될 회원은 해당팀의 팀원인지
+8. 새로운 팀장이 될 회원이 요청한 회원과 같은 회원이 아닌지
+9. 팀장변경
+
+
+
+### 발생 가능한 예외
+
+- `NotFoundTeamException`
+    - 요청한 `teamId`에 해당하는 팀이 존재하지 않는 경우
+
+- `NotFoundMemberException`
+    - 요청한 회원과, 새로운 팀장이 존재하지 않는 경우
+
+- `NotJoinedTeamException`
+    - 요청한 회원과, 새로운 팀장이 팀에 속해있지 않은 경우
+
+- `NotTeamLeaderException`
+    - 요청한 회원이 팀장이 아닌경우
+
+- `NotTeamMemberException`
+    - 요청한 회원과, 새로운 팀장이 될 회원이 해당팀의 소속이 아닌경우
+
+- `SameTeamLeaderException`
+    - 요청한 회원과, 새로운 팀장이 될 회원이 같은 경우
+---
+
 # Domain Policy
 
 ## Team
 
+
 ### 팀장 정보 기준
 
-- 팀장 여부 검증은 `Team.leaderMember`를 기준으로 수행합니다.
-- `TeamMember`는 팀장 여부의 기준으로 사용하지 않습니다.
+- 하나의 팀에는 한 명의 팀장이 존재합니다.
+- 팀장의 단일 기준은 `Team.leaderMember`입니다.
+- `TeamRole`은 팀장 여부를 표현하지 않습니다.
+- `TeamRole`은 `MEMBER`, `STAFF` 역할만 표현합니다. ( LEADER -> STAFF 에 포함된 관계입니다. )
 
 ### 팀 소속 정보 기준
 

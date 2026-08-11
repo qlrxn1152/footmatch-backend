@@ -1,4 +1,4 @@
-package com.dhoon.footmatch.teammember.validation.exceptions;
+package com.dhoon.footmatch.teammember.exception.exceptions;
 
 public class NotJoinedTeamException extends RuntimeException {
     public NotJoinedTeamException() {

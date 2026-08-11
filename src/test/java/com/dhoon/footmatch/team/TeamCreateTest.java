@@ -44,7 +44,7 @@ class TeamCreateTest {
         // then
         assertThat(response.getTeamId()).isEqualTo(savedTeam.getId());
         assertThat(savedTeam.getTeamName()).isEqualTo("teamA");
-        assertThat(teamMemberRepository.findByMemberId(leaderMember.getMemberId()).get().getTeamRole()).isEqualTo(TeamRole.LEADER);
+        assertThat(teamMemberRepository.findByMemberId(leaderMember.getMemberId()).get().getTeamRole()).isEqualTo(TeamRole.STAFF);
         assertThat(teamMemberRepository.findByMemberId(leaderMember.getMemberId()).get().getTeam().getId()).isEqualTo(savedTeam.getId());
     }
 
@@ -61,7 +61,7 @@ class TeamCreateTest {
         // then
         assertThat(response.getTeamId()).isEqualTo(savedTeam.getId());
         assertThat(savedTeam.getTeamName()).isEqualTo("Mo United");
-        assertThat(teamMemberRepository.findByMemberId(leaderMember.getMemberId()).get().getTeamRole()).isEqualTo(TeamRole.LEADER);
+        assertThat(teamMemberRepository.findByMemberId(leaderMember.getMemberId()).get().getTeamRole()).isEqualTo(TeamRole.STAFF);
         assertThat(teamMemberRepository.findByMemberId(leaderMember.getMemberId()).get().getTeam().getId()).isEqualTo(savedTeam.getId());
     }
 
