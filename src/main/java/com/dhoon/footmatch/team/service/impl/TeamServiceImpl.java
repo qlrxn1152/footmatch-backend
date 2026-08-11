@@ -46,7 +46,6 @@ public class TeamServiceImpl implements TeamService {
         return TeamCreateResponse.of(team);
     }
 
-
     @Override
     public TeamNameChangeResponse changeTeamName(TeamNameChangeRequest request, Long memberId, Long teamId) {
         String normalizedTeamName = normalizeTeamName(request.getTeamName());
@@ -58,10 +57,6 @@ public class TeamServiceImpl implements TeamService {
 
         return TeamNameChangeResponse.of(team);
     }
-
-
-
-
 
     @Override
     @Transactional(readOnly = true)
