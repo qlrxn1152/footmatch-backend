@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @IntegrateTest
-class TeamCreateServiceTest {
+class TeamCreateTest {
 
     @Autowired private MemberFixture memberFixture;
 

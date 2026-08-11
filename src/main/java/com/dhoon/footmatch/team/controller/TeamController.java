@@ -1,7 +1,9 @@
 package com.dhoon.footmatch.team.controller;
 
 import com.dhoon.footmatch.team.dto.request.TeamCreateRequest;
+import com.dhoon.footmatch.team.dto.request.TeamNameChangeRequest;
 import com.dhoon.footmatch.team.dto.response.TeamCreateResponse;
+import com.dhoon.footmatch.team.dto.response.TeamNameChangeResponse;
 import com.dhoon.footmatch.team.service.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -26,5 +26,12 @@ public class TeamController {
         TeamCreateResponse response = teamService.createTeam(request, Long.valueOf(jwt.getSubject()));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PatchMapping("/api/teams/{teamId}/name")
+    public ResponseEntity<TeamNameChangeResponse> changeTeamName(@Valid @RequestBody TeamNameChangeRequest request, @AuthenticationPrincipal Jwt jwt, @PathVariable Long teamId) {
+        TeamNameChangeResponse response = teamService.changeTeamName(request, Long.valueOf(jwt.getSubject()), teamId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

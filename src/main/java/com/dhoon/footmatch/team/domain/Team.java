@@ -38,4 +38,8 @@ public class Team {
     public static Team createTeam(String teamName) {
         return new Team(teamName);
     }
+
+    public void changeTeamName(String newTeamName) {
+        this.teamName = newTeamName;
+    }
 }

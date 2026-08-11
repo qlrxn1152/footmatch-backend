@@ -151,3 +151,60 @@
     * 입력한 팀 이름이 이미 존재하는경우
 
 ---
+
+## 팀 이름 변경
+
+### API
+
+| Method | URL                        | 설명     |
+|--------|----------------------------|--------|
+| PATCH  | `/api/teams/{teamId}/name` | 팀 이름변경 |
+
+### 호출 흐름
+
+`TeamController.changeTeamName(TeamNameChangeRequest, JWT, teamId)`
+→ `JWT에서 memberId 추출`
+→ `TeamService.changeTeamName(TeamNameChangeRequest, memberId, teamId)`
+
+
+### 처리 과정 
+
+1. 로그인한 회원이 변경할 팀 이름을 입력합니다.
+2. 회원이 존재하는지 확인합니다.
+3. 팀이 존재하는지 확인합니다.
+4. 회원이 어떤 팀에 가입되어 있는지 확인합니다.
+5. 회원이 요청한 teamId의 팀에 속한 회원인지 확인합니다.
+6. 회원이 해당 팀의 LEADER인지 확인합니다.
+7. 입력한 팀 이름의 앞뒤 공백을 제거하여 정규화합니다.
+8. 정규화된 팀 이름의 길이를 검증합니다.
+    - 길이: `2 ~ 20자`
+9. 정규화된 팀 이름이 현재 팀 이름과 동일한지 확인합니다.
+10. 정규화된 팀 이름을 다른 팀이 이미 사용 중인지 확인합니다.
+11. 모든 검증을 통과하면 팀 이름을 변경합니다.
+
+### 발생 가능한 예외
+
+- `NotFoundMemberException`
+    - 요청한 회원이 존재하지 않는 경우
+
+- `NotFoundTeamException`
+    - 변경 대상 팀이 존재하지 않는 경우
+
+- `NotJoinedTeamException`
+    - 회원이 어떤 팀에도 가입되어 있지 않은 경우
+
+- `NotTeamMemberException`
+    - 회원이 다른 팀에는 속해있지만 변경 대상 팀의 팀원이 아닌 경우
+
+- `NotTeamLeaderException`
+    - 회원이 변경 대상 팀의 LEADER가 아닌 경우
+
+- `SameTeamNameException`
+    - 변경할 팀 이름이 현재 팀 이름과 동일한 경우
+
+- `InvalidTeamNameException`
+    - 정규화된 팀 이름이 길이 조건을 만족하지 않는 경우
+
+- `DuplicateTeamNameException`
+    - 다른 팀이 동일한 팀 이름을 이미 사용하고 있는 경우
+---
