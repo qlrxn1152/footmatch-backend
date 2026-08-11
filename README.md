@@ -314,7 +314,7 @@
     - 요청한 `teamId`에 해당하는 팀이 존재하지 않는 경우
 
 - `NotFoundMemberException`
-    - 요청한 회원과, 새로운 팀장이 존재하지 않는 경우
+    - 현재 팀장 또는 새로운 팀장이 될 회원이 존재하지 않는 경우
 
 - `NotJoinedTeamException`
     - 요청한 회원과, 새로운 팀장이 팀에 속해있지 않은 경우
@@ -326,7 +326,7 @@
     - 요청한 회원과, 새로운 팀장이 될 회원이 해당팀의 소속이 아닌경우
 
 - `SameTeamLeaderException`
-    - 요청한 회원과, 새로운 팀장이 될 회원이 같은 경우
+    - 현재 팀장과 새로운 팀장이 될 회원이 동일한 경우
 ---
 
 # Domain Policy
@@ -336,10 +336,12 @@
 
 ### 팀장 정보 기준
 
+
 - 하나의 팀에는 한 명의 팀장이 존재합니다.
 - 팀장의 단일 기준은 `Team.leaderMember`입니다.
 - `TeamRole`은 팀장 여부를 표현하지 않습니다.
-- `TeamRole`은 `MEMBER`, `STAFF` 역할만 표현합니다. ( LEADER -> STAFF 에 포함된 관계입니다. )
+- `TeamRole`은 `MEMBER`, `STAFF` 역할만 표현합니다.
+- 팀장은 `TeamRole`과 별개로 `Team.leaderMember`를 통해 관리합니다.
 
 ### 팀 소속 정보 기준
 
