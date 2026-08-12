@@ -1,5 +1,6 @@
 package com.dhoon.footmatch.team.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TeamLeaderTransferRequest {
 
+    @NotNull
     private Long targetMemberId;
 
     public static TeamLeaderTransferRequest of(Long targetMemberId) {

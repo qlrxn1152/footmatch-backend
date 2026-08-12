@@ -1,9 +1,11 @@
 package com.dhoon.footmatch.team.controller;
 
 import com.dhoon.footmatch.team.dto.request.TeamCreateRequest;
+import com.dhoon.footmatch.team.dto.request.TeamLeaderTransferRequest;
 import com.dhoon.footmatch.team.dto.request.TeamNameChangeRequest;
 import com.dhoon.footmatch.team.dto.response.TeamCreateResponse;
 import com.dhoon.footmatch.team.dto.response.TeamDetailResponse;
+import com.dhoon.footmatch.team.dto.response.TeamLeaderTransferResponse;
 import com.dhoon.footmatch.team.dto.response.TeamNameChangeResponse;
 import com.dhoon.footmatch.team.service.TeamService;
 import jakarta.validation.Valid;
@@ -39,6 +41,13 @@ public class TeamController {
     @GetMapping("/api/teams/{teamId}")
     public ResponseEntity<TeamDetailResponse> getTeam(@PathVariable Long teamId) {
         TeamDetailResponse response = teamService.getTeam(teamId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PatchMapping("/api/teams/{teamId}/leader")
+    public ResponseEntity<TeamLeaderTransferResponse> transferLeader(@PathVariable Long teamId, @AuthenticationPrincipal Jwt jwt, @Valid @RequestBody TeamLeaderTransferRequest request) {
+        TeamLeaderTransferResponse response = teamService.transferLeader(teamId, Long.valueOf(jwt.getSubject()), request);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
