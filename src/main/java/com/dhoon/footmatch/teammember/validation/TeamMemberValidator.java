@@ -13,7 +13,7 @@ public class TeamMemberValidator {
     private final TeamMemberRepository teamMemberRepository;
 
     public void validateMemberBelongsToTeam(Long teamId, Long memberId) {
-        if (teamMemberRepository.existsByTeamIdAndMemberId(teamId, memberId)) {
+        if (!teamMemberRepository.existsByTeamIdAndMemberId(teamId, memberId)) {
             throw new NotTeamMemberException();
         }
     }

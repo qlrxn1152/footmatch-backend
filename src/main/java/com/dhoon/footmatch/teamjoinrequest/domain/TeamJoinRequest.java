@@ -45,5 +45,13 @@ public class TeamJoinRequest {
         return new TeamJoinRequest(team, member);
     }
 
+    public void acceptJoinRequest() {
+        this.status = TeamJoinRequestStatus.ACCEPTED;
+    }
+
+    public void cancelJoinRequest() {
+        this.status = TeamJoinRequestStatus.CANCELED;
+    }
+
 
 }

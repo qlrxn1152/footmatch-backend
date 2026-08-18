@@ -18,7 +18,7 @@ public class TeamFixture {
         return teamService.createTeam(TeamCreateRequest.of(teamName), leaderMemberId);
     }
 
-    public TeamFixtureData createTeamWithMember(String username, String teamName) {
+    public TeamFixtureData createTeamWithLeaderMember(String username, String teamName) {
         MemberCreateResponse leader = memberFixture.signupMember(username, "1234");
         TeamCreateResponse team = createTeam(teamName, leader.getMemberId());
 

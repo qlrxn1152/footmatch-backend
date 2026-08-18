@@ -43,7 +43,7 @@ public class TeamNameChangeTest {
     @DisplayName(value = "팀장은 팀 이름 변경에 성공")
     void changeTeamName() throws Exception {
         // given
-        TeamFixtureData teamFixtureData = teamFixture.createTeamWithMember("userA", "teamA");
+        TeamFixtureData teamFixtureData = teamFixture.createTeamWithLeaderMember("userA", "teamA");
 
         // when
         TeamNameChangeResponse response = teamService.changeTeamName(createTeamNameChangeRequest("teamB"), teamFixtureData.leader().getMemberId(), teamFixtureData.team().getTeamId());
@@ -59,7 +59,7 @@ public class TeamNameChangeTest {
     @DisplayName(value = "팀장은 팀 이름 변경에 성공_정규화 확인")
     void changeTeamName_check_normalized() throws Exception {
         // given
-        TeamFixtureData teamFixtureData = teamFixture.createTeamWithMember("userA", "teamA");
+        TeamFixtureData teamFixtureData = teamFixture.createTeamWithLeaderMember("userA", "teamA");
 
         // when
         TeamNameChangeResponse response = teamService.changeTeamName(createTeamNameChangeRequest(" Mo United  "), teamFixtureData.leader().getMemberId(), teamFixtureData.team().getTeamId());
@@ -75,7 +75,7 @@ public class TeamNameChangeTest {
     @DisplayName(value = "팀이름변경_실패_존재하지않는_회원")
     void changeTeamName_fail_notExistMember() throws Exception {
         // given
-        TeamFixtureData teamFixtureData = teamFixture.createTeamWithMember("userA", "teamA");
+        TeamFixtureData teamFixtureData = teamFixture.createTeamWithLeaderMember("userA", "teamA");
 
         // when  && then
         assertThatThrownBy(() -> teamService.changeTeamName(createTeamNameChangeRequest("teamB"), 1234L, teamFixtureData.team().getTeamId()))
@@ -87,7 +87,7 @@ public class TeamNameChangeTest {
     @DisplayName(value = "팀이름변경_실패_존재하지않는_팀")
     void changeTeamName_fail_notExistTeam() throws Exception {
         // given
-        TeamFixtureData teamFixtureData = teamFixture.createTeamWithMember("userA", "teamA");
+        TeamFixtureData teamFixtureData = teamFixture.createTeamWithLeaderMember("userA", "teamA");
 
         // when  && then
         assertThatThrownBy(() -> teamService.changeTeamName(createTeamNameChangeRequest("teamB"), teamFixtureData.leader().getMemberId(), 111L))
@@ -99,7 +99,7 @@ public class TeamNameChangeTest {
     @DisplayName(value = "팀이름변경_실패_어떤팀에도_가입되지_않은_회원")
     void changeTeamName_fail_notJoinedTeam() throws Exception {
         // given
-        TeamFixtureData teamFixtureData = teamFixture.createTeamWithMember("userA", "teamA");
+        TeamFixtureData teamFixtureData = teamFixture.createTeamWithLeaderMember("userA", "teamA");
         MemberCreateResponse memberB = memberFixture.signupMember("userB", "1234");
 
         // when  && then
@@ -112,8 +112,8 @@ public class TeamNameChangeTest {
     @DisplayName(value = "팀이름변경_실패_다른팀에_속해있는_회원")
     void changeTeamName_fail_not_teamMember() throws Exception {
         // given
-        TeamFixtureData teamFixtureData = teamFixture.createTeamWithMember("userA", "teamA");
-        TeamFixtureData teamBFixtureData = teamFixture.createTeamWithMember("userB", "teamB");
+        TeamFixtureData teamFixtureData = teamFixture.createTeamWithLeaderMember("userA", "teamA");
+        TeamFixtureData teamBFixtureData = teamFixture.createTeamWithLeaderMember("userB", "teamB");
 
         // when  && then
         assertThatThrownBy(() -> teamService.changeTeamName(createTeamNameChangeRequest("change"), teamBFixtureData.leader().getMemberId(), teamFixtureData.team().getTeamId()))
@@ -125,7 +125,7 @@ public class TeamNameChangeTest {
     @DisplayName(value = "팀이름변경_실패_팀이름사이즈_부족")
     void changeTeamName_fail_invalid_team_name_short() throws Exception {
         // given
-        TeamFixtureData teamFixtureData = teamFixture.createTeamWithMember("userA", "teamA");
+        TeamFixtureData teamFixtureData = teamFixture.createTeamWithLeaderMember("userA", "teamA");
 
         // when  && then
         assertThatThrownBy(() -> teamService.changeTeamName(createTeamNameChangeRequest("     a   "), teamFixtureData.leader().getMemberId(), teamFixtureData.team().getTeamId()))
@@ -141,7 +141,7 @@ public class TeamNameChangeTest {
     @DisplayName(value = "팀이름변경_실패_팀이름사이즈_초과")
     void changeTeamName_fail_invalid_team_name_long() throws Exception {
         // given
-        TeamFixtureData teamFixtureData = teamFixture.createTeamWithMember("userA", "teamA");
+        TeamFixtureData teamFixtureData = teamFixture.createTeamWithLeaderMember("userA", "teamA");
 
         // when  && then
         assertThatThrownBy(() -> teamService.changeTeamName(createTeamNameChangeRequest("      pdajoigfjnokclxnmvzoxcigjsopqweqewrt   "), teamFixtureData.leader().getMemberId(), teamFixtureData.team().getTeamId()))
@@ -157,7 +157,7 @@ public class TeamNameChangeTest {
     @DisplayName(value = "팀이름변경_실패_현재_팀이름과_동일")
     void changeTeamName_fail_same_current_name() throws Exception {
         // given
-        TeamFixtureData teamFixtureData = teamFixture.createTeamWithMember("userA", "teamA");
+        TeamFixtureData teamFixtureData = teamFixture.createTeamWithLeaderMember("userA", "teamA");
 
         // when  && then
         assertThatThrownBy(() -> teamService.changeTeamName(createTeamNameChangeRequest("teamA"), teamFixtureData.leader().getMemberId(), teamFixtureData.team().getTeamId()))
@@ -173,8 +173,8 @@ public class TeamNameChangeTest {
     @DisplayName(value = "팀이름변경_실패_다른팀이_이미_사용중인이름")
     void changeTeamName_fail_duplicate_team_name() throws Exception {
         // given
-        TeamFixtureData teamFixtureData = teamFixture.createTeamWithMember("userA", "teamA");
-        teamFixture.createTeamWithMember("userB", "teamB");
+        TeamFixtureData teamFixtureData = teamFixture.createTeamWithLeaderMember("userA", "teamA");
+        teamFixture.createTeamWithLeaderMember("userB", "teamB");
 
         // when  && then
         assertThatThrownBy(() -> teamService.changeTeamName(createTeamNameChangeRequest("teamB"), teamFixtureData.leader().getMemberId(), teamFixtureData.team().getTeamId()))

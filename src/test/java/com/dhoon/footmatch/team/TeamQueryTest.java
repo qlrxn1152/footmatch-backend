@@ -5,7 +5,6 @@ import com.dhoon.footmatch.support.fixture.TeamFixture;
 import com.dhoon.footmatch.team.dto.response.TeamDetailResponse;
 import com.dhoon.footmatch.team.exception.exceptions.NotFoundTeamException;
 import com.dhoon.footmatch.team.service.TeamService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public class TeamQueryTest {
     @DisplayName(value = "팀 상세를 조회할 수 있다.")
     void getTeam() throws Exception {
         // given
-        TeamFixtureData fixtureData = teamFixture.createTeamWithMember("userA", "teamA");
+        TeamFixtureData fixtureData = teamFixture.createTeamWithLeaderMember("userA", "teamA");
 
         // when
         TeamDetailResponse response = teamService.getTeam(fixtureData.team().getTeamId());
@@ -41,7 +40,7 @@ public class TeamQueryTest {
     @DisplayName(value = "존재하지 않는 팀을 조회할경우, 팀 상세 조회에 실패한다.")
     void getTeam_fail_notExistTeam() throws Exception {
         // given
-        teamFixture.createTeamWithMember("userA", "teamA");
+        teamFixture.createTeamWithLeaderMember("userA", "teamA");
 
         // when && then
         assertThatThrownBy(() -> teamService.getTeam(1234L))

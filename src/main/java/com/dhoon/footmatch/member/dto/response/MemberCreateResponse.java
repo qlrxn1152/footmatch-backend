@@ -1,6 +1,7 @@
 package com.dhoon.footmatch.member.dto.response;
 
 import com.dhoon.footmatch.member.domain.Member;
+import com.dhoon.footmatch.team.dto.response.TeamCreateResponse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,5 @@ public class MemberCreateResponse {
     public static MemberCreateResponse of(Member member) {
         return new MemberCreateResponse(member.getId(), member.getUsername(), member.getCreatedAt());
     }
-
 
 }

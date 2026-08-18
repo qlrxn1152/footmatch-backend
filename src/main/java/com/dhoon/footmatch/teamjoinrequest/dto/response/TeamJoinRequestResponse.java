@@ -24,4 +24,5 @@ public class TeamJoinRequestResponse {
                 joinRequest.getMember().getId()
         );
     }
+
 }
