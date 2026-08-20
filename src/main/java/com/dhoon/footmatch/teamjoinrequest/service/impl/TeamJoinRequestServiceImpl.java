@@ -37,7 +37,6 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
 
     @Override
     public TeamJoinRequestResponse joinRequest(Long teamId, Long memberId) {
-
         JoinRequestData joinRequestData = validateTeamJoinRequest(teamId, memberId);
 
         validateNoPendingJoinRequest(teamId, memberId);
@@ -55,6 +54,23 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
 
         return TeamJoinRequestAcceptResponse.of(result.joinRequest());
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
