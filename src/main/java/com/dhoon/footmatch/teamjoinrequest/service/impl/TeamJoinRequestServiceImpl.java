@@ -7,12 +7,10 @@ import com.dhoon.footmatch.team.validation.TeamValidator;
 import com.dhoon.footmatch.teamjoinrequest.domain.TeamJoinRequest;
 import com.dhoon.footmatch.teamjoinrequest.domain.TeamJoinRequestStatus;
 import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestAcceptResponse;
+import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestCancelResponse;
 import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestRejectResponse;
 import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestResponse;
-import com.dhoon.footmatch.teamjoinrequest.exception.exceptions.DuplicateTeamJoinRequestException;
-import com.dhoon.footmatch.teamjoinrequest.exception.exceptions.NotFoundTeamJoinRequestException;
-import com.dhoon.footmatch.teamjoinrequest.exception.exceptions.NotTeamJoinRequestException;
-import com.dhoon.footmatch.teamjoinrequest.exception.exceptions.TeamJoinRequestStatusException;
+import com.dhoon.footmatch.teamjoinrequest.exception.exceptions.*;
 import com.dhoon.footmatch.teamjoinrequest.repository.TeamJoinRequestRepository;
 import com.dhoon.footmatch.teamjoinrequest.service.TeamJoinRequestService;
 import com.dhoon.footmatch.teammember.domain.TeamMember;
@@ -20,6 +18,7 @@ import com.dhoon.footmatch.teammember.repository.TeamMemberRepository;
 import com.dhoon.footmatch.teammember.validation.TeamMemberValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,15 +65,24 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         return TeamJoinRequestRejectResponse.of(joinRequest);
     }
 
+    @Override
+    public TeamJoinRequestCancelResponse cancelRequest(Long teamId, Long requestId, Long requesterMemberId) {
+        TeamJoinRequest joinRequest = validateCancelRequest(requestId, requesterMemberId);
+
+        joinRequest.cancelJoinRequest();
+
+        return TeamJoinRequestCancelResponse.of(joinRequest);
+    }
+
 
     // ========================================== //
+
     private JoinRequestData validateTeamJoinRequest(Long teamId, Long memberId) {
         Member member = memberValidator.validateExistMemberAndReturn(memberId);
         Team team = teamValidator.validateExistTeamAndReturn(teamId);
         teamMemberValidator.validateMemberNotJoinedTeam(memberId);
         return new JoinRequestData(member, team);
     }
-
     private record JoinRequestData(Member member, Team team) {}
 
     private void validateNoPendingJoinRequest(Long teamId, Long memberId) {
@@ -137,6 +145,23 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
 
         memberValidator.validateExistMember(joinRequest.getMember().getId());
         return new RejectRequestData(joinRequest, team);
+    }
+
+    private @NonNull TeamJoinRequest validateCancelRequest(Long requestId, Long requesterMemberId) {
+        TeamJoinRequest joinRequest = teamJoinRequestRepository.findById(requestId)
+                .orElseThrow(NotFoundTeamJoinRequestException::new);
+
+        if ( joinRequest.getStatus() != TeamJoinRequestStatus.PENDING) {
+            throw new TeamJoinRequestStatusException();
+        }
+
+        memberValidator.validateExistMember(requesterMemberId);
+
+        if (!joinRequest.getMember().getId().equals(requesterMemberId)) {
+            throw new NotTeamJoinRequestOwnerException();
+        }
+
+        return joinRequest;
     }
 
     private record AcceptRequestData(TeamJoinRequest joinRequest, Team team) {

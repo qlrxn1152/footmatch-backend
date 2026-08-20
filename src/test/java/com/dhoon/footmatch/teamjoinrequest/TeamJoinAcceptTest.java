@@ -69,7 +69,6 @@ class TeamJoinAcceptTest {
         TeamJoinRequestResponse joinRequest = teamJoinFixture.createTeamJoinRequest("leaderA", "userA", "teamA");
         Team team = teamRepository.findById(joinRequest.getTeamId()).get();
 
-
         // when && then
         assertThatThrownBy(() -> teamJoinRequestService.acceptRequest(joinRequest.getTeamId(), 1234L, team.getLeaderMember().getId()))
                 .isInstanceOf(NotFoundTeamJoinRequestException.class);
