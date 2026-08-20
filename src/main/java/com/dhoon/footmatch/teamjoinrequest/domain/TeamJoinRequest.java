@@ -53,5 +53,9 @@ public class TeamJoinRequest {
         this.status = TeamJoinRequestStatus.CANCELED;
     }
 
+    public void rejectJoinRequest() {
+        this.status = TeamJoinRequestStatus.REJECTED;
+    }
+
 
 }

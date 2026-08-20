@@ -1,6 +1,7 @@
 package com.dhoon.footmatch.teamjoinrequest.controller;
 
 import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestAcceptResponse;
+import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestRejectResponse;
 import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestResponse;
 import com.dhoon.footmatch.teamjoinrequest.service.TeamJoinRequestService;
 import lombok.RequiredArgsConstructor;
@@ -33,4 +34,12 @@ public class TeamJoinRequestController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PostMapping("/api/teams/{teamId}/join-request/{requestId}/reject")
+    public ResponseEntity<TeamJoinRequestRejectResponse> rejectRequest(@PathVariable Long teamId, @PathVariable Long requestId, @AuthenticationPrincipal Jwt jwt) {
+        TeamJoinRequestRejectResponse response = teamJoinRequestService.rejectRequest(teamId, requestId, Long.valueOf(jwt.getSubject()));
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }

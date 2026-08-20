@@ -7,6 +7,7 @@ import com.dhoon.footmatch.team.validation.TeamValidator;
 import com.dhoon.footmatch.teamjoinrequest.domain.TeamJoinRequest;
 import com.dhoon.footmatch.teamjoinrequest.domain.TeamJoinRequestStatus;
 import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestAcceptResponse;
+import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestRejectResponse;
 import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestResponse;
 import com.dhoon.footmatch.teamjoinrequest.exception.exceptions.DuplicateTeamJoinRequestException;
 import com.dhoon.footmatch.teamjoinrequest.exception.exceptions.NotFoundTeamJoinRequestException;
@@ -55,23 +56,15 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         return TeamJoinRequestAcceptResponse.of(result.joinRequest());
     }
 
+    @Override
+    public TeamJoinRequestRejectResponse rejectRequest(Long teamId, Long requestId, Long leaderMemberId) {
+        RejectRequestData result = validateRejectRequest(teamId, requestId, leaderMemberId);
 
+        TeamJoinRequest joinRequest = result.joinRequest();
+        joinRequest.rejectJoinRequest();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return TeamJoinRequestRejectResponse.of(joinRequest);
+    }
 
 
     // ========================================== //
@@ -124,7 +117,32 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         return new AcceptRequestData(joinRequest, team);
     }
 
+    private RejectRequestData validateRejectRequest(Long teamId, Long requestId, Long leaderMemberId) {
+        TeamJoinRequest joinRequest = teamJoinRequestRepository.findById(requestId)
+                .orElseThrow(NotFoundTeamJoinRequestException::new);
+
+        if (!joinRequest.getTeam().getId().equals(teamId)) {
+            throw new NotTeamJoinRequestException();
+        }
+
+        if (joinRequest.getStatus() != TeamJoinRequestStatus.PENDING) {
+            throw new TeamJoinRequestStatusException();
+        }
+
+        memberValidator.validateExistMemberAndReturn(leaderMemberId);
+        Team team = teamValidator.validateExistTeamAndReturn(teamId);
+
+        teamMemberValidator.validateMemberBelongsToTeam(teamId, leaderMemberId);
+        teamValidator.validateCheckTeamLeader(team, leaderMemberId);
+
+        memberValidator.validateExistMember(joinRequest.getMember().getId());
+        return new RejectRequestData(joinRequest, team);
+    }
+
     private record AcceptRequestData(TeamJoinRequest joinRequest, Team team) {
+    }
+
+    private record RejectRequestData(TeamJoinRequest joinRequest, Team team) {
     }
 
 }
