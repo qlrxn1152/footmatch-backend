@@ -67,7 +67,7 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
 
     @Override
     public TeamJoinRequestCancelResponse cancelRequest(Long teamId, Long requestId, Long requesterMemberId) {
-        TeamJoinRequest joinRequest = validateCancelRequest(requestId, requesterMemberId);
+        TeamJoinRequest joinRequest = validateCancelRequest(teamId, requestId, requesterMemberId);
 
         joinRequest.cancelJoinRequest();
 
@@ -83,7 +83,6 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         teamMemberValidator.validateMemberNotJoinedTeam(memberId);
         return new JoinRequestData(member, team);
     }
-    private record JoinRequestData(Member member, Team team) {}
 
     private void validateNoPendingJoinRequest(Long teamId, Long memberId) {
         if (teamJoinRequestRepository.existsByTeamIdAndMemberIdAndStatus(teamId, memberId, TeamJoinRequestStatus.PENDING)) {
@@ -147,9 +146,13 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         return new RejectRequestData(joinRequest, team);
     }
 
-    private @NonNull TeamJoinRequest validateCancelRequest(Long requestId, Long requesterMemberId) {
+    private TeamJoinRequest validateCancelRequest(Long teamId, Long requestId, Long requesterMemberId) {
         TeamJoinRequest joinRequest = teamJoinRequestRepository.findById(requestId)
                 .orElseThrow(NotFoundTeamJoinRequestException::new);
+
+        if (!joinRequest.getTeam().getId().equals(teamId)) {
+            throw new NotTeamJoinRequestException();
+        }
 
         if ( joinRequest.getStatus() != TeamJoinRequestStatus.PENDING) {
             throw new TeamJoinRequestStatusException();
@@ -164,10 +167,11 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         return joinRequest;
     }
 
-    private record AcceptRequestData(TeamJoinRequest joinRequest, Team team) {
-    }
+    private record AcceptRequestData(TeamJoinRequest joinRequest, Team team) { }
 
-    private record RejectRequestData(TeamJoinRequest joinRequest, Team team) {
-    }
+    private record RejectRequestData(TeamJoinRequest joinRequest, Team team) { }
+
+    private record JoinRequestData(Member member, Team team) {}
+
 
 }

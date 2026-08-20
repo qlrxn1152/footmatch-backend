@@ -117,6 +117,21 @@ class TeamJoinRejectTest {
                 .isInstanceOf(NotTeamLeaderException.class);
     }
 
+    @Test
+    @DisplayName(value = "가입신청에 있는팀과, 요청한 팀의 값이 다를경우 실패")
+    void rejectRequest_fail_team() throws Exception {
+        // given
+        TeamFixtureData team = teamFixture.createTeamWithLeaderMember("leaderA", "teamA");
+        MemberCreateResponse member = memberFixture.signupMember("userA", "1234");
+
+        TeamJoinRequestResponse joinRequest = teamJoinRequestService.joinRequest(team.team().getTeamId(), member.getMemberId());
+
+        // when && then
+        assertThatThrownBy(() -> teamJoinRequestService.rejectRequest(1234L, joinRequest.getJoinRequestId(), member.getMemberId()))
+                .isInstanceOf(NotTeamJoinRequestException.class);
+    }
+
+
 
 
 
