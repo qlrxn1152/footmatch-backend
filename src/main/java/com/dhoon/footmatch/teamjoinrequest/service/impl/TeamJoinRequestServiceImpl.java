@@ -46,7 +46,6 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         return TeamJoinRequestResponse.of(joinRequest);
     }
 
-
     @Override
     public TeamJoinRequestAcceptResponse acceptRequest(Long teamId, Long requestId, Long leaderMemberId) {
         AcceptRequestData result = validateAcceptRequest(teamId, requestId, leaderMemberId);
