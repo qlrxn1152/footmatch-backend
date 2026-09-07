@@ -39,7 +39,7 @@ public class TeamLeaveTest {
     void leave_team() throws Exception {
         // given
         TeamFixture.TeamFixtureData data = teamFixture.createTeamWithLeaderMember("leaderA", "teamA");
-        TeamJoinRequestAcceptResponse acceptResponse = teamJoinFixture.requestCreateAndAccept(data.team().getTeamId());
+        TeamJoinRequestAcceptResponse acceptResponse = teamJoinFixture.requestCreateAndAccept(data.team().getTeamId(), "memberA");
 
         // when
         TeamLeaveResponse response = teamMemberService.leaveTeam(data.team().getTeamId(), acceptResponse.getMemberId());
@@ -55,7 +55,7 @@ public class TeamLeaveTest {
     void leave_team_fail_notExistMember() throws Exception {
         // given
         TeamFixture.TeamFixtureData data = teamFixture.createTeamWithLeaderMember("leaderA", "teamA");
-        TeamJoinRequestAcceptResponse acceptResponse = teamJoinFixture.requestCreateAndAccept(data.team().getTeamId());
+        TeamJoinRequestAcceptResponse acceptResponse = teamJoinFixture.requestCreateAndAccept(data.team().getTeamId(), "memberA");
 
         // when && then
         assertThatThrownBy(() -> teamMemberService.leaveTeam(data.team().getTeamId(), 1234L))
@@ -69,7 +69,7 @@ public class TeamLeaveTest {
     void leave_team_fail_notExistTeam() throws Exception {
         // given
         TeamFixture.TeamFixtureData data = teamFixture.createTeamWithLeaderMember("leaderA", "teamA");
-        TeamJoinRequestAcceptResponse acceptResponse = teamJoinFixture.requestCreateAndAccept(data.team().getTeamId());
+        TeamJoinRequestAcceptResponse acceptResponse = teamJoinFixture.requestCreateAndAccept(data.team().getTeamId(), "memberA");
 
         // when && then
         assertThatThrownBy(() -> teamMemberService.leaveTeam(12343L, acceptResponse.getMemberId()))
@@ -99,7 +99,7 @@ public class TeamLeaveTest {
         TeamFixture.TeamFixtureData data = teamFixture.createTeamWithLeaderMember("leaderA", "teamA");
         TeamFixture.TeamFixtureData dataB = teamFixture.createTeamWithLeaderMember("leaderB", "teamB");
 
-        TeamJoinRequestAcceptResponse acceptResponse = teamJoinFixture.requestCreateAndAccept(data.team().getTeamId());
+        TeamJoinRequestAcceptResponse acceptResponse = teamJoinFixture.requestCreateAndAccept(data.team().getTeamId(), "memberA");
 
         // when && then
         assertThatThrownBy(() -> teamMemberService.leaveTeam(dataB.team().getTeamId(), acceptResponse.getMemberId()))

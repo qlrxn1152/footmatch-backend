@@ -38,8 +38,8 @@ public class TeamJoinRequestFixture {
         return teamJoinRequestService.joinRequest(teamId, requester.getMemberId());
     }
 
-    public TeamJoinRequestAcceptResponse requestCreateAndAccept(Long teamId) {
-        TeamJoinRequestResponse request = createTeamJoinRequest(teamId, "requester"); // 가입요청 생성
+    public TeamJoinRequestAcceptResponse requestCreateAndAccept(Long teamId, String requesterUsername) {
+        TeamJoinRequestResponse request = createTeamJoinRequest(teamId, requesterUsername); // 가입요청 생성
 
         Team team = teamRepository.findById(teamId).orElseThrow(NotFoundTeamException::new);
 
