@@ -1,9 +1,6 @@
 package com.dhoon.footmatch.teamjoinrequest.controller;
 
-import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestAcceptResponse;
-import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestCancelResponse;
-import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestRejectResponse;
-import com.dhoon.footmatch.teamjoinrequest.dto.response.TeamJoinRequestResponse;
+import com.dhoon.footmatch.teamjoinrequest.dto.response.*;
 import com.dhoon.footmatch.teamjoinrequest.service.TeamJoinRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +44,13 @@ public class TeamJoinRequestController {
     @PostMapping("/api/teams/{teamId}/join-request/{requestId}/cancel")
     public ResponseEntity<TeamJoinRequestCancelResponse> cancelRequest(@PathVariable Long teamId, @PathVariable Long requestId, @AuthenticationPrincipal Jwt jwt) {
         TeamJoinRequestCancelResponse response = teamJoinRequestService.cancelRequest(teamId, requestId, Long.valueOf(jwt.getSubject()));
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/api/teams/{teamId}/join-requests")
+    public ResponseEntity<TeamJoinRequestsListResponse> getJoinRequests(@PathVariable Long teamId, @AuthenticationPrincipal Jwt jwt) {
+        TeamJoinRequestsListResponse response = teamJoinRequestService.getPendingRequests(teamId, Long.valueOf(jwt.getSubject()));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

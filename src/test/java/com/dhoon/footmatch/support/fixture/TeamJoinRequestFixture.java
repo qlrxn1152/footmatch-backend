@@ -32,6 +32,7 @@ public class TeamJoinRequestFixture {
         return teamJoinRequestService.joinRequest(teamMember.team().getTeamId(), member.getMemberId());
     }
 
+
     public TeamJoinRequestResponse createTeamJoinRequest(Long teamId, String requesterUsername) {
         MemberCreateResponse requester = memberFixture.signupMember(requesterUsername, "1234");
 
