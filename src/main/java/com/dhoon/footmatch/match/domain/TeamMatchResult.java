@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
-@Table(name = "team_matches")
+@Table(name = "team_match_results")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamMatchResult {

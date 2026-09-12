@@ -40,7 +40,6 @@ public class TeamMatch {
         this.homeTeam = homeTeam;
         this.playedAt = playedAt;
 
-
         this.awayTeam = null; // TODO : null... ?
 
         this.createdAt = LocalDateTime.now();
