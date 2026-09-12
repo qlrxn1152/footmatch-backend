@@ -74,9 +74,9 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
 
     @Override
     public TeamJoinRequestsListResponse getPendingRequests(Long teamId, Long requesterMemberId) {
-        Team team = validateForGetPendingMatches(teamId, requesterMemberId);
+        Team team = validateForGetPendingRequest(teamId, requesterMemberId);
 
-        return getPendingMatchesAndToDtoReturn(teamId, team);
+        return getPendingRequestsAndToDtoReturn(teamId, team);
     }
 
 
@@ -173,7 +173,7 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
     }
 
 
-    private TeamJoinRequestsListResponse getPendingMatchesAndToDtoReturn(Long teamId, Team team) {
+    private TeamJoinRequestsListResponse getPendingRequestsAndToDtoReturn(Long teamId, Team team) {
         List<TeamJoinRequestListDto> requests = teamJoinRequestRepository.findAllByTeamIdAndStatus(teamId, TeamJoinRequestStatus.PENDING)
                 .stream()
                 .map(TeamJoinRequestListDto::of)
@@ -183,7 +183,7 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         return TeamJoinRequestsListResponse.of(team, requests);
     }
 
-    private @NonNull Team validateForGetPendingMatches(Long teamId, Long requesterMemberId) {
+    private @NonNull Team validateForGetPendingRequest(Long teamId, Long requesterMemberId) {
         Team team = teamValidator.validateExistTeamAndReturn(teamId);
         memberValidator.validateExistMemberAndReturn(requesterMemberId);
         teamMemberValidator.validateMemberBelongsToTeam(teamId, requesterMemberId);
