@@ -96,11 +96,11 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
     }
 
     private void acceptTeamJoinRequest(AcceptRequestData result) {
-        teamMemberRepository.save(TeamMember.createMember(result.team(), result.joinRequest().getMember())); // 팀원으로 ..
-        result.joinRequest().acceptJoinRequest(); // 해당 가입신청 ACCEPTED
+        teamMemberRepository.save(TeamMember.createMember(result.team(), result.joinRequest().getMember()));
+        result.joinRequest().acceptJoinRequest();
 
         teamJoinRequestRepository.findAllByMemberIdAndStatus(result.joinRequest().getMember().getId(), TeamJoinRequestStatus.PENDING)
-                .forEach(TeamJoinRequest::cancelJoinRequest); // 해당 가입요청을 제외한 나머지 해당유저의 가입신청들은 CANCELED 로 변경..
+                .forEach(TeamJoinRequest::cancelJoinRequest);
     }
 
 
