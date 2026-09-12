@@ -29,20 +29,26 @@ public class TeamMatch {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "match_status", nullable = false)
-    private TeamMatchStatus matchStatus;
+    @Column(name = "played_at", nullable = false)
+    private LocalDateTime playedAt;
 
-    private TeamMatch(Team homeTeam, Team awayTeam) {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "team_match_status", nullable = false)
+    private TeamMatchStatus teamMatchStatus;
+
+    private TeamMatch(Team homeTeam, LocalDateTime playedAt) {
         this.homeTeam = homeTeam;
-        this.awayTeam = awayTeam;
+        this.playedAt = playedAt;
+
+
+        this.awayTeam = null; // TODO : null... ?
 
         this.createdAt = LocalDateTime.now();
-        this.matchStatus = TeamMatchStatus.PENDING;
+        this.teamMatchStatus = TeamMatchStatus.PENDING;
     }
 
-    public static TeamMatch of(Team homeTeam, Team awayTeam) {
-        return new TeamMatch(homeTeam, awayTeam);
+    public static TeamMatch createTeamMatch(Team homeTeam, LocalDateTime playedAt) {
+        return new TeamMatch(homeTeam, playedAt);
     }
 
 }
