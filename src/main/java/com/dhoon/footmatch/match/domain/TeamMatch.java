@@ -1,9 +1,12 @@
 package com.dhoon.footmatch.match.domain;
 
+import com.dhoon.footmatch.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "team_matches")
@@ -15,7 +18,31 @@ public class TeamMatch {
     @Column(name = "match_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "home_team_id", nullable = false)
+    private Team homeTeam;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "away_team_id")
+    private Team awayTeam;
 
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "match_status", nullable = false)
+    private TeamMatchStatus matchStatus;
+
+    private TeamMatch(Team homeTeam, Team awayTeam) {
+        this.homeTeam = homeTeam;
+        this.awayTeam = awayTeam;
+
+        this.createdAt = LocalDateTime.now();
+        this.matchStatus = TeamMatchStatus.PENDING;
+    }
+
+    public static TeamMatch of(Team homeTeam, Team awayTeam) {
+        return new TeamMatch(homeTeam, awayTeam);
+    }
 
 }
