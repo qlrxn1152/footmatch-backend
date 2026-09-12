@@ -13,7 +13,7 @@ public interface TeamJoinRequestRepository extends JpaRepository<TeamJoinRequest
 
     List<TeamJoinRequest> findAllByMemberIdAndStatus(Long memberId, TeamJoinRequestStatus status);
 
-    @Query("select tjr from TeamJoinRequest tjr join fetch tjr.member where tjr.team.id = :teamId and tjr.status = :status")
+    @Query("select tjr from TeamJoinRequest tjr join fetch tjr.member where tjr.team.id = :teamId and tjr.status = :status order by tjr.createdAt asc")
     List<TeamJoinRequest> findAllByTeamIdAndStatus(Long teamId, TeamJoinRequestStatus status);
 
 
