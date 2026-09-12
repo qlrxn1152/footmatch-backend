@@ -2,8 +2,11 @@ package com.dhoon.footmatch.match.service.impl;
 
 
 import com.dhoon.footmatch.match.domain.TeamMatch;
+import com.dhoon.footmatch.match.domain.TeamMatchStatus;
 import com.dhoon.footmatch.match.dto.request.TeamMatchCreateRequest;
 import com.dhoon.footmatch.match.dto.response.TeamMatchCreateResponse;
+import com.dhoon.footmatch.match.exception.exceptions.AlreadyExistPendingMatchException;
+import com.dhoon.footmatch.match.exception.exceptions.InvalidMatchPlayedAtException;
 import com.dhoon.footmatch.match.repository.TeamMatchRepository;
 import com.dhoon.footmatch.match.service.TeamMatchService;
 import com.dhoon.footmatch.member.validation.MemberValidator;
@@ -35,6 +38,19 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         memberValidator.validateExistMemberAndReturn(requesterMemberId);
         teamMemberValidator.validateMemberBelongsToTeam(teamId, requesterMemberId);
         teamValidator.validateCheckTeamLeader(team, requesterMemberId);
+
+        if (request.getPlayedAt() == null) {
+            throw new InvalidMatchPlayedAtException();
+        }
+
+        if (!request.getPlayedAt().isAfter(LocalDateTime.now())) {
+            throw new InvalidMatchPlayedAtException();
+        }
+
+        if (teamMatchRepository.existsByHomeTeamIdAndTeamMatchStatus(teamId, TeamMatchStatus.PENDING)) {
+            throw new AlreadyExistPendingMatchException();
+        }
+
 
         TeamMatch teamMatch = TeamMatch.createTeamMatch(team, request.getPlayedAt());
         teamMatchRepository.save(teamMatch);
