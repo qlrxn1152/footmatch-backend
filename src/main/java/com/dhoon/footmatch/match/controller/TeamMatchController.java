@@ -20,14 +20,14 @@ public class TeamMatchController {
 
     private final TeamMatchService teamMatchService;
 
-    @PostMapping("/api/team-match/{teamId}")
+    @PostMapping("/api/team-match/{teamId}/matches")
     public ResponseEntity<TeamMatchCreateResponse> createTeamMatch(@PathVariable Long teamId, @AuthenticationPrincipal Jwt jwt, @Valid @RequestBody TeamMatchCreateRequest request) {
         TeamMatchCreateResponse response = teamMatchService.createTeamMatch(teamId, Long.valueOf(jwt.getSubject()), request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping("/api/team-match/{matchId}")
+    @PostMapping("/api/team-match/{matchId}/accept-requests")
     public ResponseEntity<TeamMatchAcceptRequestResponse> acceptRequestTeamMatch(@PathVariable Long matchId, @AuthenticationPrincipal Jwt jwt) {
         TeamMatchAcceptRequestResponse response = teamMatchService.acceptRequestTeamMatch(matchId, Long.valueOf(jwt.getSubject()));
 

@@ -22,7 +22,8 @@ public class TeamMatchAcceptRequestResponse {
                 teamMatchAcceptRequest.getId(),
                 teamMatch.getId(),
                 teamMatch.getHomeTeam().getTeamName(),
-                teamMatch.getAwayTeam().getTeamName()
+                teamMatchAcceptRequest.getTeam().getTeamName()
         );
     }
+
 }

@@ -3,13 +3,12 @@ package com.dhoon.footmatch.match.service.impl;
 
 import com.dhoon.footmatch.match.domain.TeamMatch;
 import com.dhoon.footmatch.match.domain.TeamMatchAcceptRequest;
+import com.dhoon.footmatch.match.domain.TeamMatchAcceptRequestStatus;
 import com.dhoon.footmatch.match.domain.TeamMatchStatus;
 import com.dhoon.footmatch.match.dto.request.TeamMatchCreateRequest;
 import com.dhoon.footmatch.match.dto.response.TeamMatchAcceptRequestResponse;
 import com.dhoon.footmatch.match.dto.response.TeamMatchCreateResponse;
-import com.dhoon.footmatch.match.exception.exceptions.AlreadyExistPendingMatchException;
-import com.dhoon.footmatch.match.exception.exceptions.InvalidMatchPlayedAtException;
-import com.dhoon.footmatch.match.exception.exceptions.NotFoundTeamMatchException;
+import com.dhoon.footmatch.match.exception.exceptions.*;
 import com.dhoon.footmatch.match.repository.TeamMatchAcceptRequestRepository;
 import com.dhoon.footmatch.match.repository.TeamMatchRepository;
 import com.dhoon.footmatch.match.service.TeamMatchService;
@@ -59,6 +58,17 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         TeamMember teamMember = teamMemberValidator.validateMemberBelongsToTeamAndReturn(requesterMemberId);
         teamValidator.validateExistTeamAndReturn(teamMember.getTeam().getId());
         teamValidator.validateCheckTeamLeader(teamMember.getTeam(), requesterMemberId);
+
+        // 자기팀 매치에 요청을 보내는 경우 검증
+        if(teamMatch.getHomeTeam().getId().equals(teamMember.getTeam().getId())) {
+            throw new CannotRequestOwnTeamMatchException();
+
+        }
+
+        // 이미 요청을 보낸 매치인지 검증
+        if (teamMatchAcceptRequestRepository.existsByTeamMatchIdAndTeamIdAndStatus(matchId, teamMember.getTeam().getId(), TeamMatchAcceptRequestStatus.PENDING)) {
+            throw new AlreadyRequestedTeamMatchException();
+        }
 
 
         TeamMatchAcceptRequest teamMatchAcceptRequest = TeamMatchAcceptRequest.of(teamMatch, member, teamMember.getTeam());
