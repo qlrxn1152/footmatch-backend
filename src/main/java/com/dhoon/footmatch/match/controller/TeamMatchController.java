@@ -1,6 +1,7 @@
 package com.dhoon.footmatch.match.controller;
 
 import com.dhoon.footmatch.match.dto.request.TeamMatchCreateRequest;
+import com.dhoon.footmatch.match.dto.response.TeamMatchAcceptRequestResponse;
 import com.dhoon.footmatch.match.dto.response.TeamMatchCreateResponse;
 import com.dhoon.footmatch.match.service.TeamMatchService;
 import jakarta.validation.Valid;
@@ -26,6 +27,10 @@ public class TeamMatchController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PostMapping("/api/team-match/{matchId}")
+    public ResponseEntity<TeamMatchAcceptRequestResponse> acceptRequestTeamMatch(@PathVariable Long matchId, @AuthenticationPrincipal Jwt jwt) {
+        TeamMatchAcceptRequestResponse response = teamMatchService.acceptRequestTeamMatch(matchId, Long.valueOf(jwt.getSubject()));
 
-
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 }
