@@ -9,12 +9,14 @@ import com.dhoon.footmatch.match.exception.exceptions.AlreadyExistPendingMatchEx
 import com.dhoon.footmatch.match.exception.exceptions.InvalidMatchPlayedAtException;
 import com.dhoon.footmatch.match.repository.TeamMatchRepository;
 import com.dhoon.footmatch.match.service.TeamMatchService;
+import com.dhoon.footmatch.match.validation.TeamMatchValidation;
 import com.dhoon.footmatch.member.validation.MemberValidator;
 import com.dhoon.footmatch.team.domain.Team;
 import com.dhoon.footmatch.team.validation.TeamValidator;
 import com.dhoon.footmatch.teammember.validation.TeamMemberValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,29 +33,12 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     private final TeamValidator teamValidator;
     private final MemberValidator memberValidator;
     private final TeamMemberValidator teamMemberValidator;
+    private final TeamMatchValidation teamMatchValidation;
 
     @Override
     public TeamMatchCreateResponse createTeamMatch(Long teamId, Long requesterMemberId, TeamMatchCreateRequest request) {
-        Team team = teamValidator.validateExistTeamAndReturn(teamId);
-        memberValidator.validateExistMemberAndReturn(requesterMemberId);
-        teamMemberValidator.validateMemberBelongsToTeam(teamId, requesterMemberId);
-        teamValidator.validateCheckTeamLeader(team, requesterMemberId);
-
-        if (request.getPlayedAt() == null) {
-            throw new InvalidMatchPlayedAtException();
-        }
-
-        if (!request.getPlayedAt().isAfter(LocalDateTime.now())) {
-            throw new InvalidMatchPlayedAtException();
-        }
-
-        if (teamMatchRepository.existsByHomeTeamIdAndTeamMatchStatus(teamId, TeamMatchStatus.PENDING)) {
-            throw new AlreadyExistPendingMatchException();
-        }
-
-
-        TeamMatch teamMatch = TeamMatch.createTeamMatch(team, request.getPlayedAt());
-        teamMatchRepository.save(teamMatch);
+        Team team = validateForCreateTeamMatch(teamId, requesterMemberId, request);
+        TeamMatch teamMatch = createTeamMatchAndSave(request, team);
 
         return TeamMatchCreateResponse.of(teamMatch);
     }
@@ -61,6 +46,26 @@ public class TeamMatchServiceImpl implements TeamMatchService {
 
 
 
+
+
+
+
+    private @NonNull TeamMatch createTeamMatchAndSave(TeamMatchCreateRequest request, Team team) {
+        TeamMatch teamMatch = TeamMatch.createTeamMatch(team, request.getPlayedAt());
+        teamMatchRepository.save(teamMatch);
+        return teamMatch;
+    }
+
+
+    private @NonNull Team validateForCreateTeamMatch(Long teamId, Long requesterMemberId, TeamMatchCreateRequest request) {
+        Team team = teamValidator.validateExistTeamAndReturn(teamId);
+        memberValidator.validateExistMemberAndReturn(requesterMemberId);
+        teamMemberValidator.validateMemberBelongsToTeam(teamId, requesterMemberId);
+        teamValidator.validateCheckTeamLeader(team, requesterMemberId);
+        teamMatchValidation.validatePlayedAt(request);
+        teamMatchValidation.validateAlreadyExistPendingMatch(teamId);
+        return team;
+    }
 
 
 }
