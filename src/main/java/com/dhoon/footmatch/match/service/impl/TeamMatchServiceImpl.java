@@ -79,6 +79,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TeamMatchPendingListResponse getPendingMatches() {
         List<TeamMatchPendingResponse> pendingMatches = teamMatchRepository.findAllByTeamMatchStatus(TeamMatchStatus.PENDING)
                 .stream()

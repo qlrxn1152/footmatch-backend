@@ -10,7 +10,7 @@ import java.util.List;
 public interface TeamMatchRepository extends JpaRepository<TeamMatch, Long> {
     boolean existsByHomeTeamIdAndTeamMatchStatus(Long homeTeamId, TeamMatchStatus teamMatchStatus);
 
-    @Query("select tm from TeamMatch tm join fetch tm.homeTeam where tm.teamMatchStatus = :teamMatchStatus")
+    @Query("select tm from TeamMatch tm join fetch tm.homeTeam join fetch tm.homeTeam.leaderMember where tm.teamMatchStatus = :teamMatchStatus")
     List<TeamMatch> findAllByTeamMatchStatus(TeamMatchStatus teamMatchStatus);
 
 }

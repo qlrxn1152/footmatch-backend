@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TeamMatchPendingResponse {
 
+    private Long matchId;
     private String homeTeamName;
     private int homeTeamRating;
     private String homeTeamLeaderUsername;
@@ -22,6 +23,7 @@ public class TeamMatchPendingResponse {
 
     public static TeamMatchPendingResponse of(TeamMatch teamMatch) {
         return new TeamMatchPendingResponse(
+                teamMatch.getId(),
                 teamMatch.getHomeTeam().getTeamName(),
                 teamMatch.getHomeTeam().getRating(),
                 teamMatch.getHomeTeam().getLeaderMember().getUsername(),
