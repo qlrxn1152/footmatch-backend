@@ -101,7 +101,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     @Override
     public TeamMatchMatchedResponse acceptTeamMatchRequest(Long matchId, Long requestId, Long requesterMemberId) {
         TeamMatch teamMatch = teamMatchValidation.validateTeamMatchExistAndReturn(matchId);
-        TeamMatchAcceptRequest acceptRequest = teamMatchAcceptRequestRepository.findById(requestId)
+        TeamMatchAcceptRequest acceptRequest = teamMatchAcceptRequestRepository.findByIdAndTeamMatchId(requestId, matchId)
                 .orElseThrow(NotFoundTeamMatchAcceptRequestException::new);
 
         Team homeTeam = teamValidator.validateExistTeamAndReturn(teamMatch.getHomeTeam().getId());// 홈팀 존재
@@ -117,31 +117,48 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         }
 
 
-        matchedMatch(acceptRequest, teamMatch); // 양방향 매핑
+        completeMatchAcceptance(acceptRequest, teamMatch);
+
         return TeamMatchMatchedResponse.of(teamMatch);
     }
 
-    private static void matchedMatch(TeamMatchAcceptRequest acceptRequest, TeamMatch teamMatch) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void completeMatchAcceptance(TeamMatchAcceptRequest acceptRequest, TeamMatch teamMatch) {
         acceptRequest.acceptRequest(); // request -> status = ACCEPTED
         teamMatch.match(acceptRequest.getTeam()); // 원정팀 할당, status = MATCHED
+
+        rejectOtherRequests(teamMatch.getId(), acceptRequest.getId());
     }
 
-
-    //
-    private void validateForGetAcceptRequests(Long teamId, Long requesterMemberId) {
-        memberValidator.validateExistMember(requesterMemberId);
-        Team team = teamValidator.validateExistTeamAndReturn(teamId);
-        teamMemberValidator.validateMemberBelongsToTeam(teamId, requesterMemberId);
-        teamValidator.validateCheckTeamLeader(team, requesterMemberId);
+    private void rejectOtherRequests(Long matchId, Long requestId) {
+        teamMatchAcceptRequestRepository.findAllByTeamMatchIdAndStatus(matchId, TeamMatchAcceptRequestStatus.PENDING)
+                .stream()
+                .filter(request -> !request.getId().equals(requestId))
+                .forEach(TeamMatchAcceptRequest::rejectRequest);
     }
-
 
     private @NonNull TeamMatch createTeamMatchAndSave(TeamMatchCreateRequest request, Team team) {
         TeamMatch teamMatch = TeamMatch.createTeamMatch(team, request.getPlayedAt());
         teamMatchRepository.save(teamMatch);
         return teamMatch;
     }
-
 
     private @NonNull Team validateForCreateTeamMatch(Long teamId, Long requesterMemberId, TeamMatchCreateRequest request) {
         Team team = teamValidator.validateExistTeamAndReturn(teamId);
@@ -153,5 +170,11 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         return team;
     }
 
+    private void validateForGetAcceptRequests(Long teamId, Long requesterMemberId) {
+        memberValidator.validateExistMember(requesterMemberId);
+        Team team = teamValidator.validateExistTeamAndReturn(teamId);
+        teamMemberValidator.validateMemberBelongsToTeam(teamId, requesterMemberId);
+        teamValidator.validateCheckTeamLeader(team, requesterMemberId);
+    }
 
 }

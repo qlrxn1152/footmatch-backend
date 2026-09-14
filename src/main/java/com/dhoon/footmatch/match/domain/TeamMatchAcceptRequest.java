@@ -58,5 +58,9 @@ public class TeamMatchAcceptRequest {
         this.status = TeamMatchAcceptRequestStatus.ACCEPTED;
     }
 
+    public void rejectRequest() {
+        this.status = TeamMatchAcceptRequestStatus.REJECTED;
+    }
+
 
 }

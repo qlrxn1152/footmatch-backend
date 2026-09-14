@@ -23,8 +23,6 @@ public class TeamMatchMatchedResponse {
     private int awayTeamRating;
     private String awayTeamLeaderUsername;
 
-    private LocalDateTime matchedAt;
-
     public static TeamMatchMatchedResponse of(TeamMatch teamMatch) {
         return new TeamMatchMatchedResponse(
                 teamMatch.getId(),
@@ -35,9 +33,8 @@ public class TeamMatchMatchedResponse {
 
                 teamMatch.getAwayTeam().getTeamName(),
                 teamMatch.getAwayTeam().getRating(),
-                teamMatch.getAwayTeam().getLeaderMember().getUsername(),
+                teamMatch.getAwayTeam().getLeaderMember().getUsername()
 
-                LocalDateTime.now()
         );
 
     }

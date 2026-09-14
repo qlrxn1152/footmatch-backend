@@ -47,7 +47,7 @@ public class TeamMatchController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping("/api/team-match/{matchId}/accept/{requestId}")
+    @PostMapping("/api/team-match/{matchId}/accept-requests/{requestId}")
     public ResponseEntity<TeamMatchMatchedResponse> acceptTeamMatch(@PathVariable Long matchId, @PathVariable Long requestId, @AuthenticationPrincipal Jwt jwt) {
         TeamMatchMatchedResponse response = teamMatchService.acceptTeamMatchRequest(matchId, requestId, Long.valueOf(jwt.getSubject()));
 
