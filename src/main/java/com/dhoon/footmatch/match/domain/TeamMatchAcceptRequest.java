@@ -52,4 +52,11 @@ public class TeamMatchAcceptRequest {
     }
 
 
+
+
+    public void acceptRequest() {
+        this.status = TeamMatchAcceptRequestStatus.ACCEPTED;
+    }
+
+
 }

@@ -1,10 +1,7 @@
 package com.dhoon.footmatch.match.controller;
 
 import com.dhoon.footmatch.match.dto.request.TeamMatchCreateRequest;
-import com.dhoon.footmatch.match.dto.response.TeamMatchAcceptRequestResponse;
-import com.dhoon.footmatch.match.dto.response.TeamMatchAcceptRequestsResponse;
-import com.dhoon.footmatch.match.dto.response.TeamMatchCreateResponse;
-import com.dhoon.footmatch.match.dto.response.TeamMatchPendingListResponse;
+import com.dhoon.footmatch.match.dto.response.*;
 import com.dhoon.footmatch.match.service.TeamMatchService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +27,8 @@ public class TeamMatchController {
     }
 
     @PostMapping("/api/team-match/{matchId}/accept-requests")
-    public ResponseEntity<TeamMatchAcceptRequestResponse> acceptRequestTeamMatch(@PathVariable Long matchId, @AuthenticationPrincipal Jwt jwt) {
-        TeamMatchAcceptRequestResponse response = teamMatchService.acceptRequestTeamMatch(matchId, Long.valueOf(jwt.getSubject()));
+    public ResponseEntity<TeamMatchAcceptRequestResponse> requestTeamMatchAcceptance(@PathVariable Long matchId, @AuthenticationPrincipal Jwt jwt) {
+        TeamMatchAcceptRequestResponse response = teamMatchService.requestTeamMatchAcceptance(matchId, Long.valueOf(jwt.getSubject()));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -46,6 +43,13 @@ public class TeamMatchController {
     @GetMapping("/api/team-match/{teamId}/pendings")
     public ResponseEntity<TeamMatchAcceptRequestsResponse> getTeamPendingMatchAcceptRequests(@PathVariable Long teamId, @AuthenticationPrincipal Jwt jwt) {
         TeamMatchAcceptRequestsResponse response = teamMatchService.getTeamMatchAcceptRequests(teamId, Long.valueOf(jwt.getSubject()));
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/api/team-match/{matchId}/accept/{requestId}")
+    public ResponseEntity<TeamMatchMatchedResponse> acceptTeamMatch(@PathVariable Long matchId, @PathVariable Long requestId, @AuthenticationPrincipal Jwt jwt) {
+        TeamMatchMatchedResponse response = teamMatchService.acceptTeamMatchRequest(matchId, requestId, Long.valueOf(jwt.getSubject()));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

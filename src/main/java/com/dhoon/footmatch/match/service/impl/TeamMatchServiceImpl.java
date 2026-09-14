@@ -49,7 +49,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     }
 
     @Override
-    public TeamMatchAcceptRequestResponse acceptRequestTeamMatch(Long matchId, Long requesterMemberId) {
+    public TeamMatchAcceptRequestResponse requestTeamMatchAcceptance(Long matchId, Long requesterMemberId) {
         TeamMatch teamMatch = teamMatchValidation.validateTeamMatchExistAndReturn(matchId);
         teamMatchValidation.validateTeamMatchPendingStatus(teamMatch);
         Member member = memberValidator.validateExistMemberAndReturn(requesterMemberId);
@@ -88,10 +88,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     @Override
     @Transactional(readOnly = true)
     public TeamMatchAcceptRequestsResponse getTeamMatchAcceptRequests(Long teamId, Long requesterMemberId) {
-        memberValidator.validateExistMember(requesterMemberId);
-        Team team = teamValidator.validateExistTeamAndReturn(teamId);
-        teamMemberValidator.validateMemberBelongsToTeam(teamId, requesterMemberId);
-        teamValidator.validateCheckTeamLeader(team, requesterMemberId);
+        validateForGetAcceptRequests(teamId, requesterMemberId);
 
         List<TeamMatchAcceptRequestListItemResponse> requests = teamMatchAcceptRequestRepository.findAllByTeamId(teamId)
                 .stream()
@@ -101,15 +98,42 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         return TeamMatchAcceptRequestsResponse.of(requests);
     }
 
+    @Override
+    public TeamMatchMatchedResponse acceptTeamMatchRequest(Long matchId, Long requestId, Long requesterMemberId) {
+        TeamMatch teamMatch = teamMatchValidation.validateTeamMatchExistAndReturn(matchId);
+        TeamMatchAcceptRequest acceptRequest = teamMatchAcceptRequestRepository.findById(requestId)
+                .orElseThrow(NotFoundTeamMatchAcceptRequestException::new);
+
+        Team homeTeam = teamValidator.validateExistTeamAndReturn(teamMatch.getHomeTeam().getId());// 홈팀 존재
+        teamValidator.validateExistTeamAndReturn(acceptRequest.getTeam().getId()); // 원정팀 존재
+
+        memberValidator.validateExistMember(requesterMemberId);
+        teamMemberValidator.validateMemberBelongsToTeam(homeTeam.getId(), requesterMemberId);
+        teamValidator.validateCheckTeamLeader(homeTeam, requesterMemberId);
+        teamMatchValidation.validateTeamMatchPendingStatus(teamMatch);
+
+        if ( acceptRequest.getStatus() != TeamMatchAcceptRequestStatus.PENDING) {
+            throw new InvalidTeamMatchAcceptRequestStatusException();
+        }
 
 
+        matchedMatch(acceptRequest, teamMatch); // 양방향 매핑
+        return TeamMatchMatchedResponse.of(teamMatch);
+    }
+
+    private static void matchedMatch(TeamMatchAcceptRequest acceptRequest, TeamMatch teamMatch) {
+        acceptRequest.acceptRequest(); // request -> status = ACCEPTED
+        teamMatch.match(acceptRequest.getTeam()); // 원정팀 할당, status = MATCHED
+    }
 
 
-
-
-
-
-
+    //
+    private void validateForGetAcceptRequests(Long teamId, Long requesterMemberId) {
+        memberValidator.validateExistMember(requesterMemberId);
+        Team team = teamValidator.validateExistTeamAndReturn(teamId);
+        teamMemberValidator.validateMemberBelongsToTeam(teamId, requesterMemberId);
+        teamValidator.validateCheckTeamLeader(team, requesterMemberId);
+    }
 
 
     private @NonNull TeamMatch createTeamMatchAndSave(TeamMatchCreateRequest request, Team team) {

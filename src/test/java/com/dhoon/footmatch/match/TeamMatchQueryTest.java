@@ -67,8 +67,8 @@ public class TeamMatchQueryTest {
         TeamFixtureData awayBData = teamFixture.createTeamWithLeaderMember("leaderB", "teamB");
         TeamFixtureData awayCData = teamFixture.createTeamWithLeaderMember("leaderC", "teamC");
 
-        teamMatchService.acceptRequestTeamMatch(matchA.getMatchId(), awayBData.leader().getMemberId());
-        teamMatchService.acceptRequestTeamMatch(matchA.getMatchId(), awayCData.leader().getMemberId());
+        teamMatchService.requestTeamMatchAcceptance(matchA.getMatchId(), awayBData.leader().getMemberId());
+        teamMatchService.requestTeamMatchAcceptance(matchA.getMatchId(), awayCData.leader().getMemberId());
 
         // when
         TeamMatchAcceptRequestsResponse response = teamMatchService.getTeamMatchAcceptRequests(dataA.team().getTeamId(), dataA.leader().getMemberId());
