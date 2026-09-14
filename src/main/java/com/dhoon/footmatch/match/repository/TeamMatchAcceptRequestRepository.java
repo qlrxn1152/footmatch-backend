@@ -11,8 +11,8 @@ public interface TeamMatchAcceptRequestRepository extends JpaRepository<TeamMatc
 
     boolean existsByTeamMatchIdAndTeamIdAndStatus(Long teamMatchId, Long teamId, TeamMatchAcceptRequestStatus status);
 
-    @Query("select tmar from TeamMatchAcceptRequest tmar join fetch tmar.member join fetch tmar.team where tmar.team.id = :teamId")
-    List<TeamMatchAcceptRequest> findByTeamId(Long teamId);
+    @Query("select tmar from TeamMatchAcceptRequest tmar join fetch tmar.member join fetch tmar.team where tmar.teamMatch.homeTeam.id = :teamId")
+    List<TeamMatchAcceptRequest> findAllByTeamId(Long teamId); // 홈팀 id
 
 
 }

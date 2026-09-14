@@ -29,7 +29,7 @@ public class TeamMatchAcceptRequest {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_team_id", nullable = false)
-    private Team team;
+    private Team team; // 원정팀
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

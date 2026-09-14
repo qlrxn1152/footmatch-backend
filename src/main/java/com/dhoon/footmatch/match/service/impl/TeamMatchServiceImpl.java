@@ -24,7 +24,6 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -94,7 +93,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         teamMemberValidator.validateMemberBelongsToTeam(teamId, requesterMemberId);
         teamValidator.validateCheckTeamLeader(team, requesterMemberId);
 
-        List<TeamMatchAcceptRequestListItemResponse> requests = teamMatchAcceptRequestRepository.findByTeamId(teamId)
+        List<TeamMatchAcceptRequestListItemResponse> requests = teamMatchAcceptRequestRepository.findAllByTeamId(teamId)
                 .stream()
                 .map(TeamMatchAcceptRequestListItemResponse::of)
                 .toList();

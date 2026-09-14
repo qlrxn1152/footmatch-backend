@@ -1,10 +1,10 @@
 package com.dhoon.footmatch.match;
 
 import com.dhoon.footmatch.match.domain.TeamMatch;
+import com.dhoon.footmatch.match.domain.TeamMatchAcceptRequest;
 import com.dhoon.footmatch.match.domain.TeamMatchStatus;
-import com.dhoon.footmatch.match.dto.response.TeamMatchCreateResponse;
-import com.dhoon.footmatch.match.dto.response.TeamMatchPendingListResponse;
-import com.dhoon.footmatch.match.dto.response.TeamMatchPendingResponse;
+import com.dhoon.footmatch.match.dto.response.*;
+import com.dhoon.footmatch.match.repository.TeamMatchAcceptRequestRepository;
 import com.dhoon.footmatch.match.repository.TeamMatchRepository;
 import com.dhoon.footmatch.match.service.TeamMatchService;
 import com.dhoon.footmatch.support.IntegrateTest;
@@ -26,6 +26,7 @@ public class TeamMatchQueryTest {
 
     @Autowired private TeamMatchService teamMatchService;
     @Autowired private TeamMatchRepository teamMatchRepository;
+    @Autowired private TeamMatchAcceptRequestRepository teamMatchAcceptRequestRepository;
 
     @Autowired private TeamFixture teamFixture;
     @Autowired private TeamMatchFixture teamMatchFixture;
@@ -54,6 +55,27 @@ public class TeamMatchQueryTest {
         assertThat(response.getPendingMatches()).extracting(TeamMatchPendingResponse::getHomeTeamName).containsExactly("teamA", "teamB", "teamC");
         assertThat(allMatches).extracting(TeamMatch::getTeamMatchStatus).containsExactly(TeamMatchStatus.PENDING,  TeamMatchStatus.PENDING, TeamMatchStatus.PENDING);
         assertThat(allMatches).extracting(TeamMatch::getId).containsExactly(teamAMatch.getMatchId(), teamBMatch.getMatchId(), teamCMatch.getMatchId());
+    }
+
+    @Test
+    @DisplayName(value = "특정 팀이 등록한 매치에 수락 요청이 들어온 요청들을 조회할 수 있다.")
+    void getTeamMatchAcceptRequest() throws Exception {
+        // given
+        TeamFixtureData dataA = teamFixture.createTeamWithLeaderMember("leaderA", "teamA");
+        TeamMatchCreateResponse matchA = teamMatchFixture.createTeamMatch(dataA.team().getTeamId(), dataA.leader().getMemberId(), MATCH_PLAYED_AT);
+
+        TeamFixtureData awayBData = teamFixture.createTeamWithLeaderMember("leaderB", "teamB");
+        TeamFixtureData awayCData = teamFixture.createTeamWithLeaderMember("leaderC", "teamC");
+
+        teamMatchService.acceptRequestTeamMatch(matchA.getMatchId(), awayBData.leader().getMemberId());
+        teamMatchService.acceptRequestTeamMatch(matchA.getMatchId(), awayCData.leader().getMemberId());
+
+        // when
+        TeamMatchAcceptRequestsResponse response = teamMatchService.getTeamMatchAcceptRequests(dataA.team().getTeamId(), dataA.leader().getMemberId());
+
+        // then
+        assertThat(response.getRequests()).hasSize(2);
+        assertThat(response.getRequests()).extracting(TeamMatchAcceptRequestListItemResponse::getRequesterTeamName).containsExactly("teamB", "teamC");
     }
 
 
