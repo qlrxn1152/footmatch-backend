@@ -50,4 +50,10 @@ public class TeamMatch {
         return new TeamMatch(homeTeam, playedAt);
     }
 
+
+    public void match(Team awayTeam) {
+        this.awayTeam = awayTeam;
+        this.teamMatchStatus = TeamMatchStatus.MATCHED;
+    }
+
 }
