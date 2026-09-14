@@ -6,10 +6,7 @@ import com.dhoon.footmatch.match.domain.TeamMatchAcceptRequest;
 import com.dhoon.footmatch.match.domain.TeamMatchAcceptRequestStatus;
 import com.dhoon.footmatch.match.domain.TeamMatchStatus;
 import com.dhoon.footmatch.match.dto.request.TeamMatchCreateRequest;
-import com.dhoon.footmatch.match.dto.response.TeamMatchAcceptRequestResponse;
-import com.dhoon.footmatch.match.dto.response.TeamMatchCreateResponse;
-import com.dhoon.footmatch.match.dto.response.TeamMatchPendingListResponse;
-import com.dhoon.footmatch.match.dto.response.TeamMatchPendingResponse;
+import com.dhoon.footmatch.match.dto.response.*;
 import com.dhoon.footmatch.match.exception.exceptions.*;
 import com.dhoon.footmatch.match.repository.TeamMatchAcceptRequestRepository;
 import com.dhoon.footmatch.match.repository.TeamMatchRepository;
@@ -88,6 +85,23 @@ public class TeamMatchServiceImpl implements TeamMatchService {
 
         return TeamMatchPendingListResponse.of(pendingMatches);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TeamMatchAcceptRequestsResponse getTeamMatchAcceptRequests(Long teamId, Long requesterMemberId) {
+        memberValidator.validateExistMember(requesterMemberId);
+        Team team = teamValidator.validateExistTeamAndReturn(teamId);
+        teamMemberValidator.validateMemberBelongsToTeam(teamId, requesterMemberId);
+        teamValidator.validateCheckTeamLeader(team, requesterMemberId);
+
+        List<TeamMatchAcceptRequestListItemResponse> requests = teamMatchAcceptRequestRepository.findByTeamId(teamId)
+                .stream()
+                .map(TeamMatchAcceptRequestListItemResponse::of)
+                .toList();
+
+        return TeamMatchAcceptRequestsResponse.of(requests);
+    }
+
 
 
 

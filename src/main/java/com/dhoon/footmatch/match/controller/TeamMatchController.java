@@ -2,6 +2,7 @@ package com.dhoon.footmatch.match.controller;
 
 import com.dhoon.footmatch.match.dto.request.TeamMatchCreateRequest;
 import com.dhoon.footmatch.match.dto.response.TeamMatchAcceptRequestResponse;
+import com.dhoon.footmatch.match.dto.response.TeamMatchAcceptRequestsResponse;
 import com.dhoon.footmatch.match.dto.response.TeamMatchCreateResponse;
 import com.dhoon.footmatch.match.dto.response.TeamMatchPendingListResponse;
 import com.dhoon.footmatch.match.service.TeamMatchService;
@@ -35,9 +36,16 @@ public class TeamMatchController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/api/team-matches/pending")
+    @GetMapping("/api/team-match/pendings")
     public ResponseEntity<TeamMatchPendingListResponse> getPendingMatches() {
         TeamMatchPendingListResponse response = teamMatchService.getPendingMatches();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/api/team-match/{teamId}/pendings")
+    public ResponseEntity<TeamMatchAcceptRequestsResponse> getTeamPendingMatchAcceptRequests(@PathVariable Long teamId, @AuthenticationPrincipal Jwt jwt) {
+        TeamMatchAcceptRequestsResponse response = teamMatchService.getTeamMatchAcceptRequests(teamId, Long.valueOf(jwt.getSubject()));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

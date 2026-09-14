@@ -4,6 +4,7 @@ import com.dhoon.footmatch.match.domain.TeamMatch;
 import com.dhoon.footmatch.match.domain.TeamMatchAcceptRequest;
 import com.dhoon.footmatch.match.dto.request.TeamMatchCreateRequest;
 import com.dhoon.footmatch.match.dto.response.TeamMatchAcceptRequestResponse;
+import com.dhoon.footmatch.match.dto.response.TeamMatchAcceptRequestsResponse;
 import com.dhoon.footmatch.match.dto.response.TeamMatchCreateResponse;
 import com.dhoon.footmatch.match.dto.response.TeamMatchPendingListResponse;
 
@@ -16,6 +17,8 @@ public interface TeamMatchService {
     TeamMatchAcceptRequestResponse acceptRequestTeamMatch(Long matchId, Long requesterMemberId);
 
     TeamMatchPendingListResponse getPendingMatches();
+
+    TeamMatchAcceptRequestsResponse getTeamMatchAcceptRequests(Long teamId, Long requesterMemberId);
 
 
 
