@@ -8,6 +8,8 @@ import com.dhoon.footmatch.match.domain.TeamMatchStatus;
 import com.dhoon.footmatch.match.dto.request.TeamMatchCreateRequest;
 import com.dhoon.footmatch.match.dto.response.TeamMatchAcceptRequestResponse;
 import com.dhoon.footmatch.match.dto.response.TeamMatchCreateResponse;
+import com.dhoon.footmatch.match.dto.response.TeamMatchPendingListResponse;
+import com.dhoon.footmatch.match.dto.response.TeamMatchPendingResponse;
 import com.dhoon.footmatch.match.exception.exceptions.*;
 import com.dhoon.footmatch.match.repository.TeamMatchAcceptRequestRepository;
 import com.dhoon.footmatch.match.repository.TeamMatchRepository;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -74,6 +77,21 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         teamMatchAcceptRequestRepository.save(teamMatchAcceptRequest);
         return TeamMatchAcceptRequestResponse.of(teamMatch, teamMatchAcceptRequest);
     }
+
+    @Override
+    public TeamMatchPendingListResponse getPendingMatches() {
+        List<TeamMatchPendingResponse> pendingMatches = teamMatchRepository.findAllByTeamMatchStatus(TeamMatchStatus.PENDING)
+                .stream()
+                .map(TeamMatchPendingResponse::of)
+                .toList();
+
+        return TeamMatchPendingListResponse.of(pendingMatches);
+    }
+
+
+
+
+
 
 
 
