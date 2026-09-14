@@ -33,4 +33,10 @@ public class TeamMatchController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @GetMapping("/api/team-matches/pending")
+    public ResponseEntity<> getPendingMatches() {
+
+
+    }
 }

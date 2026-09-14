@@ -62,9 +62,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         // 자기팀 매치에 요청을 보내는 경우 검증
         if(teamMatch.getHomeTeam().getId().equals(teamMember.getTeam().getId())) {
             throw new CannotRequestOwnTeamMatchException();
-
         }
-
         // 이미 요청을 보낸 매치인지 검증
         if (teamMatchAcceptRequestRepository.existsByTeamMatchIdAndTeamIdAndStatus(matchId, teamMember.getTeam().getId(), TeamMatchAcceptRequestStatus.PENDING)) {
             throw new AlreadyRequestedTeamMatchException();
@@ -76,6 +74,10 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         teamMatchAcceptRequestRepository.save(teamMatchAcceptRequest);
         return TeamMatchAcceptRequestResponse.of(teamMatch, teamMatchAcceptRequest);
     }
+
+
+
+
 
 
     private @NonNull TeamMatch createTeamMatchAndSave(TeamMatchCreateRequest request, Team team) {
