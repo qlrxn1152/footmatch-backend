@@ -116,28 +116,41 @@ public class TeamMatchServiceImpl implements TeamMatchService {
             throw new InvalidTeamMatchAcceptRequestStatusException();
         }
 
-
         completeMatchAcceptance(acceptRequest, teamMatch);
 
         return TeamMatchMatchedResponse.of(teamMatch);
     }
 
+    @Override
+    public TeamPendingMatchesResponse getTeamPendingMatches(Long teamId) {
+        List<TeamPendingMatchResponse> pendingMatches = teamMatchRepository.findAllByHomeTeamIdAndStatus(teamId, TeamMatchStatus.PENDING)
+                .stream()
+                .map(TeamPendingMatchResponse::of)
+                .toList();
 
+        return TeamPendingMatchesResponse.of(pendingMatches);
+    }
 
+    @Override
+    public TeamMatchedMatchesResponse getTeamMatchedMatches(Long teamId) {
+        List<TeamMatchedMatchResponse> matchedMatches = teamMatchRepository.findAllTheTeamMatchedMatches(teamId, TeamMatchStatus.MATCHED)
+                .stream()
+                .map(TeamMatchedMatchResponse::of)
+                .toList();
 
+        // 요청한 파라미터에 있는 TeamId 가 , 홈팀으로 속해져있는지 원정팀으로 속해져있는지 확인 ...
+        return TeamMatchedMatchesResponse.of(matchedMatches);
+    }
 
+    @Override
+    public TeamMatchedMatchesResponse getMatchedMatches() {
+        List<TeamMatchedMatchResponse> matchedMatches = teamMatchRepository.findAllByTeamMatchStatus(TeamMatchStatus.MATCHED)
+                .stream()
+                .map(TeamMatchedMatchResponse::of)
+                .toList();
 
-
-
-
-
-
-
-
-
-
-
-
+        return TeamMatchedMatchesResponse.of(matchedMatches);
+    }
 
 
     private void completeMatchAcceptance(TeamMatchAcceptRequest acceptRequest, TeamMatch teamMatch) {
