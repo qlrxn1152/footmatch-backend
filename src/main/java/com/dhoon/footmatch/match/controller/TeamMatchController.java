@@ -74,6 +74,7 @@ public class TeamMatchController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // 모든팀의 MATCHED 매치들 조회
     @GetMapping("/api/team-matches/matched")
     public ResponseEntity<TeamMatchedMatchesResponse> getMatchedMatches() {
         TeamMatchedMatchesResponse response = teamMatchService.getMatchedMatches();
