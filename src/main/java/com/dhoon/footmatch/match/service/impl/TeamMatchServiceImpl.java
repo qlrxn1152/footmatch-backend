@@ -122,6 +122,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TeamPendingMatchesResponse getTeamPendingMatches(Long teamId) {
         List<TeamPendingMatchResponse> pendingMatches = teamMatchRepository.findAllByHomeTeamIdAndStatus(teamId, TeamMatchStatus.PENDING)
                 .stream()
@@ -132,6 +133,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TeamMatchedMatchesResponse getTeamMatchedMatches(Long teamId) {
         List<TeamMatchedMatchResponse> matchedMatches = teamMatchRepository.findAllTheTeamMatchedMatches(teamId, TeamMatchStatus.MATCHED)
                 .stream()
@@ -143,6 +145,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TeamMatchedMatchesResponse getMatchedMatches() {
         List<TeamMatchedMatchResponse> matchedMatches = teamMatchRepository.findAllByTeamMatchStatus(TeamMatchStatus.MATCHED)
                 .stream()
@@ -175,6 +178,31 @@ public class TeamMatchServiceImpl implements TeamMatchService {
 
         return TeamMatchResultCreateResponse.of(matchResult);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TeamCompletedMatchesResponse getTeamCompletedMatches(Long teamId) {
+        List<TeamCompletedMatchResponse> completedMatches = teamMatchResultRepository.findAllTheTeamMatchedMatches(teamId, TeamMatchStatus.COMPLETED)
+                .stream()
+                .map(TeamCompletedMatchResponse::of)
+                .toList();
+
+        return TeamCompletedMatchesResponse.of(completedMatches);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TeamCompletedMatchesResponse getCompletedMatches() {
+        List<TeamCompletedMatchResponse> completedMatches = teamMatchResultRepository.findAllByTeamMatchStatus(TeamMatchStatus.COMPLETED)
+                .stream()
+                .map(TeamCompletedMatchResponse::of)
+                .toList();
+
+        return TeamCompletedMatchesResponse.of(completedMatches);
+    }
+
+
+
 
 
     private void completeMatchAcceptance(TeamMatchAcceptRequest acceptRequest, TeamMatch teamMatch) {

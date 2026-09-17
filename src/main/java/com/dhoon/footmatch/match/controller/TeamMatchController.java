@@ -65,6 +65,14 @@ public class TeamMatchController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/api/teams/{teamId}/matches/completed")
+    public ResponseEntity<TeamCompletedMatchesResponse> getTeamCompletedMatches(@PathVariable Long teamId) {
+        TeamCompletedMatchesResponse response = teamMatchService.getTeamCompletedMatches(teamId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
 
     // 모든팀의 PENDING 매치들 조회
     @GetMapping("/api/team-matches/pending")
@@ -81,6 +89,17 @@ public class TeamMatchController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    // 모든팀의 COMPLETED 매치들 조회
+    @GetMapping("/api/team-matches/completed")
+    public ResponseEntity<TeamCompletedMatchesResponse> getCompletedMatches() {
+        TeamCompletedMatchesResponse response = teamMatchService.getCompletedMatches();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+
 
 
 

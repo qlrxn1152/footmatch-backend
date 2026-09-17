@@ -29,6 +29,10 @@ public interface TeamMatchService {
 
     TeamMatchResultCreateResponse createTeamMatchResult(Long matchId, TeamMatchResultCreateRequest request);
 
+    TeamCompletedMatchesResponse getTeamCompletedMatches(Long teamId);
+
+    TeamCompletedMatchesResponse getCompletedMatches();
+
 
 
 

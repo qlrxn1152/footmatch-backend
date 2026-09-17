@@ -1,6 +1,8 @@
 package com.dhoon.footmatch.match;
 
+import com.dhoon.footmatch.match.domain.TeamMatch;
 import com.dhoon.footmatch.match.domain.TeamMatchResult;
+import com.dhoon.footmatch.match.domain.TeamMatchStatus;
 import com.dhoon.footmatch.match.dto.request.TeamMatchResultCreateRequest;
 import com.dhoon.footmatch.match.dto.response.TeamMatchMatchedResponse;
 import com.dhoon.footmatch.match.dto.response.TeamMatchResultCreateResponse;
@@ -26,6 +28,7 @@ public class TeamMatchResultCreateTest {
 
     @Autowired private TeamMatchService teamMatchService;
     @Autowired private TeamMatchResultRepository teamMatchResultRepository;
+    @Autowired private TeamMatchRepository teamMatchRepository;
 
     @Autowired private TeamFixture teamFixture;
     @Autowired private TeamMatchFixture teamMatchFixture;
@@ -50,6 +53,7 @@ public class TeamMatchResultCreateTest {
         TeamMatchResultCreateResponse response = teamMatchService.createTeamMatchResult(match.getMatchId(), createTeamMatchResultCreateRequest(3, 1));// 3:1 홈팀승리
 
         TeamMatchResult entityMatchResult = teamMatchResultRepository.findById(response.getMatchResultId()).get();
+        TeamMatch entityTeamMatch = teamMatchRepository.findById(response.getMatchId()).get();
 
         // then
         assertThat(response.getWinnerTeamName()).isEqualTo("teamA");
@@ -59,6 +63,8 @@ public class TeamMatchResultCreateTest {
         assertThat(entityMatchResult.getHomeScore()).isEqualTo(3);
         assertThat(entityMatchResult.getAwayScore()).isEqualTo(1);
         assertThat(entityMatchResult.getWinnerTeam().getId()).isEqualTo(teamA.team().getTeamId());
+
+        assertThat(entityTeamMatch.getTeamMatchStatus()).isEqualTo(TeamMatchStatus.COMPLETED);
     }
 
     @Test
@@ -74,6 +80,7 @@ public class TeamMatchResultCreateTest {
         TeamMatchResultCreateResponse response = teamMatchService.createTeamMatchResult(match.getMatchId(), createTeamMatchResultCreateRequest(2, 4));// 2:4 원정팀승리
 
         TeamMatchResult entityMatchResult = teamMatchResultRepository.findById(response.getMatchResultId()).get();
+        TeamMatch entityTeamMatch = teamMatchRepository.findById(response.getMatchId()).get();
 
         // then
         assertThat(response.getWinnerTeamName()).isEqualTo("teamB");
@@ -83,6 +90,8 @@ public class TeamMatchResultCreateTest {
         assertThat(entityMatchResult.getHomeScore()).isEqualTo(2);
         assertThat(entityMatchResult.getAwayScore()).isEqualTo(4);
         assertThat(entityMatchResult.getWinnerTeam().getId()).isEqualTo(teamB.team().getTeamId());
+
+        assertThat(entityTeamMatch.getTeamMatchStatus()).isEqualTo(TeamMatchStatus.COMPLETED);
     }
 
     @Test
@@ -98,6 +107,7 @@ public class TeamMatchResultCreateTest {
         TeamMatchResultCreateResponse response = teamMatchService.createTeamMatchResult(match.getMatchId(), createTeamMatchResultCreateRequest(2, 2)); // 2:2 무승부
 
         TeamMatchResult entityMatchResult = teamMatchResultRepository.findById(response.getMatchResultId()).get();
+        TeamMatch entityTeamMatch = teamMatchRepository.findById(response.getMatchId()).get();
 
         // then
         assertThat(response.getWinnerTeamName()).isNull();
@@ -108,6 +118,8 @@ public class TeamMatchResultCreateTest {
         assertThat(entityMatchResult.getAwayScore()).isEqualTo(2);
 
         assertThat(entityMatchResult.getWinnerTeam()).isNull();
+
+        assertThat(entityTeamMatch.getTeamMatchStatus()).isEqualTo(TeamMatchStatus.COMPLETED);
     }
 
 
