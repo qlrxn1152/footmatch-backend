@@ -10,10 +10,10 @@ import java.util.List;
 
 public interface TeamMatchResultRepository extends JpaRepository<TeamMatchResult, Long> {
 
-    @Query("select tm from TeamMatch tm where (tm.homeTeam.id = :teamId or tm.awayTeam.id = :teamId) and tm.teamMatchStatus = :teamMatchStatus")
+    @Query("select tmr from TeamMatchResult tmr where (tmr.teamMatch.homeTeam.id = :teamId or tmr.teamMatch.awayTeam.id = :teamId) and tmr.teamMatch.teamMatchStatus = :teamMatchStatus")
     List<TeamMatchResult> findAllTheTeamMatchedMatches(Long teamId, TeamMatchStatus teamMatchStatus);
 
-    @Query("select tm from TeamMatch tm join fetch tm.homeTeam join fetch tm.homeTeam.leaderMember where tm.teamMatchStatus = :teamMatchStatus")
+    @Query("select tmr from TeamMatchResult tmr join fetch tmr.teamMatch.homeTeam join fetch tmr.teamMatch.homeTeam.leaderMember where tmr.teamMatch.teamMatchStatus = :teamMatchStatus")
     List<TeamMatchResult> findAllByTeamMatchStatus(TeamMatchStatus teamMatchStatus);
 
 

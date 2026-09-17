@@ -35,7 +35,7 @@ public class TeamMatchController {
     }
 
 
-    @GetMapping("/api/team-matches/{teamId}/pendings")
+    @GetMapping("/api/team-matches/{teamId}/request/pendings")
     public ResponseEntity<TeamMatchAcceptRequestsResponse> getTeamPendingMatchAcceptRequests(@PathVariable Long teamId, @AuthenticationPrincipal Jwt jwt) {
         TeamMatchAcceptRequestsResponse response = teamMatchService.getTeamMatchAcceptRequests(teamId, Long.valueOf(jwt.getSubject()));
 
@@ -48,6 +48,7 @@ public class TeamMatchController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 
 
     // 쿼리파라미터 -> dto 를 다양하게 못보내고 통일된 ... MATCHED , COMPLETED, PENDING -> DTO 에 필요한값들이 각각 다 다름 .. => 쿼리파라미터를 사용 X
@@ -100,9 +101,7 @@ public class TeamMatchController {
 
 
 
-
-
-
+    
     @PostMapping("/api/team-matches/{matchId}/result")
     public ResponseEntity<TeamMatchResultCreateResponse> createTeamMatchResult(@PathVariable Long matchId, @Valid @RequestBody TeamMatchResultCreateRequest request) {
         TeamMatchResultCreateResponse response = teamMatchService.createTeamMatchResult(matchId, request);
