@@ -1,15 +1,14 @@
 package com.dhoon.footmatch.match.service.impl;
 
 
-import com.dhoon.footmatch.match.domain.TeamMatch;
-import com.dhoon.footmatch.match.domain.TeamMatchAcceptRequest;
-import com.dhoon.footmatch.match.domain.TeamMatchAcceptRequestStatus;
-import com.dhoon.footmatch.match.domain.TeamMatchStatus;
+import com.dhoon.footmatch.match.domain.*;
 import com.dhoon.footmatch.match.dto.request.TeamMatchCreateRequest;
+import com.dhoon.footmatch.match.dto.request.TeamMatchResultCreateRequest;
 import com.dhoon.footmatch.match.dto.response.*;
 import com.dhoon.footmatch.match.exception.exceptions.*;
 import com.dhoon.footmatch.match.repository.TeamMatchAcceptRequestRepository;
 import com.dhoon.footmatch.match.repository.TeamMatchRepository;
+import com.dhoon.footmatch.match.repository.TeamMatchResultRepository;
 import com.dhoon.footmatch.match.service.TeamMatchService;
 import com.dhoon.footmatch.match.validation.TeamMatchValidation;
 import com.dhoon.footmatch.member.domain.Member;
@@ -34,6 +33,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
 
     private final TeamMatchRepository teamMatchRepository;
     private final TeamMatchAcceptRequestRepository teamMatchAcceptRequestRepository;
+    private final TeamMatchResultRepository teamMatchResultRepository;
 
     private final TeamValidator teamValidator;
     private final MemberValidator memberValidator;
@@ -150,6 +150,30 @@ public class TeamMatchServiceImpl implements TeamMatchService {
                 .toList();
 
         return TeamMatchedMatchesResponse.of(matchedMatches);
+    }
+
+    @Override
+    public TeamMatchResultCreateResponse createTeamMatchResult(Long matchId, TeamMatchResultCreateRequest request) {
+        TeamMatch match = teamMatchValidation.validateTeamMatchExistAndReturn(matchId);
+
+        Team winnerTeam = null;
+        int homeScore = request.getHomeScore();
+        int awayScore = request.getAwayScore();
+
+        if (homeScore > awayScore) {
+            winnerTeam = match.getHomeTeam();
+        }
+
+        else if ( awayScore > homeScore) {
+            winnerTeam = match.getAwayTeam();
+        }
+
+        // 무승부 => winnerTeam = null ( ? )
+        TeamMatchResult matchResult = TeamMatchResult.of(match, winnerTeam, homeScore, awayScore);
+        match.completed();
+        teamMatchResultRepository.save(matchResult);
+
+        return TeamMatchResultCreateResponse.of(matchResult);
     }
 
 

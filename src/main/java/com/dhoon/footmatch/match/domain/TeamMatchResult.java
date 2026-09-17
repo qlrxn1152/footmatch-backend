@@ -27,7 +27,7 @@ public class TeamMatchResult {
     private TeamMatch teamMatch;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "winner_team_id", nullable = false)
+    @JoinColumn(name = "winner_team_id")
     private Team winnerTeam;
 
     @Column(name = "home_score")
@@ -39,6 +39,23 @@ public class TeamMatchResult {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "teamMatchResult")
     private List<TeamMatchScorer> scorers = new ArrayList<>();
 
+    public TeamMatchResult(TeamMatch teamMatch, Team winnerTeam, int homeScore, int awayScore) {
+        this.teamMatch = teamMatch;
+        this.winnerTeam = winnerTeam;
+        this.homeScore = homeScore;
+        this.awayScore = awayScore;
+    }
+
+    public static TeamMatchResult of(TeamMatch teamMatch, Team winnerTeam, int homeScore, int awayScore) {
+        return new TeamMatchResult(
+                teamMatch,
+                winnerTeam,
+                homeScore,
+                awayScore
+        );
+    }
+
+    ///
     private TeamMatchResult(TeamMatch teamMatch, Team winnerTeam, int homeScore, int awayScore, List<TeamMatchScorer> scorers) {
         this.teamMatch = teamMatch;
         this.winnerTeam = winnerTeam;

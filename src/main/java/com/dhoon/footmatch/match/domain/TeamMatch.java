@@ -56,4 +56,8 @@ public class TeamMatch {
         this.teamMatchStatus = TeamMatchStatus.MATCHED;
     }
 
+    public void completed() {
+        this.teamMatchStatus = TeamMatchStatus.COMPLETED;
+    }
+
 }
