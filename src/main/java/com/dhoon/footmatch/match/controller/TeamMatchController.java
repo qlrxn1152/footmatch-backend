@@ -50,7 +50,6 @@ public class TeamMatchController {
 
 
     // 쿼리파라미터 -> dto 를 다양하게 못보내고 통일된 ... MATCHED , COMPLETED, PENDING -> DTO 에 필요한값들이 각각 다 다름 .. => 쿼리파라미터를 사용 X
-
     @GetMapping("/api/teams/{teamId}/matches/pending")
     public ResponseEntity<TeamPendingMatchesResponse> getTeamPendingMatches(@PathVariable Long teamId) {
         TeamPendingMatchesResponse response = teamMatchService.getTeamPendingMatches(teamId);
@@ -67,7 +66,7 @@ public class TeamMatchController {
 
 
     // 모든팀의 PENDING 매치들 조회
-    @GetMapping("/api/team-matches/pendings")
+    @GetMapping("/api/team-matches/pending")
     public ResponseEntity<TeamMatchPendingListResponse> getPendingMatches() {
         TeamMatchPendingListResponse response = teamMatchService.getPendingMatches();
 
