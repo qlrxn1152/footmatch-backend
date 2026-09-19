@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TeamListItemResponse {
 
+    private Long id;
     private String teamName;
     private int teamRating;
     private String leaderUsername;
@@ -18,6 +19,7 @@ public class TeamListItemResponse {
 
     public static TeamListItemResponse of(Team team, long memberCount) {
         return new TeamListItemResponse(
+                team.getId(),
                 team.getTeamName(),
                 team.getRating(),
                 team.getLeaderMember().getUsername(),

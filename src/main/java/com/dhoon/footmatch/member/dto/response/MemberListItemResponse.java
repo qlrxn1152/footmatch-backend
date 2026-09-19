@@ -11,10 +11,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberListItemResponse {
 
+    private Long id;
     private String username;
     private int rating;
 
     public static MemberListItemResponse of(Member member) {
-        return new MemberListItemResponse(member.getUsername(), member.getRating());
+        return new MemberListItemResponse(
+                member.getId(),
+                member.getUsername(),
+                member.getRating()
+        );
     }
+
 }
