@@ -3,6 +3,8 @@ package com.dhoon.footmatch.member.service.impl;
 import com.dhoon.footmatch.member.domain.Member;
 import com.dhoon.footmatch.member.dto.request.MemberCreateRequest;
 import com.dhoon.footmatch.member.dto.response.MemberCreateResponse;
+import com.dhoon.footmatch.member.dto.response.MemberListItemResponse;
+import com.dhoon.footmatch.member.dto.response.MemberListResponse;
 import com.dhoon.footmatch.member.dto.response.MemberMeResponse;
 import com.dhoon.footmatch.member.repository.MemberRepository;
 import com.dhoon.footmatch.member.service.MemberService;
@@ -12,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -41,5 +45,16 @@ public class MemberServiceImpl implements MemberService {
     public MemberMeResponse getMe(Long memberId) {
         Member member = memberValidator.validateExistMemberAndReturn(memberId);
         return MemberMeResponse.of(member);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberListResponse getMemberList() {
+        List<MemberListItemResponse> members = memberRepository.findAll()
+                .stream()
+                .map(MemberListItemResponse::of)
+                .toList();
+
+        return MemberListResponse.of(members);
     }
 }

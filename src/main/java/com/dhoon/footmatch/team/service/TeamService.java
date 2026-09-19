@@ -3,10 +3,7 @@ package com.dhoon.footmatch.team.service;
 import com.dhoon.footmatch.team.dto.request.TeamCreateRequest;
 import com.dhoon.footmatch.team.dto.request.TeamLeaderTransferRequest;
 import com.dhoon.footmatch.team.dto.request.TeamNameChangeRequest;
-import com.dhoon.footmatch.team.dto.response.TeamCreateResponse;
-import com.dhoon.footmatch.team.dto.response.TeamDetailResponse;
-import com.dhoon.footmatch.team.dto.response.TeamLeaderTransferResponse;
-import com.dhoon.footmatch.team.dto.response.TeamNameChangeResponse;
+import com.dhoon.footmatch.team.dto.response.*;
 
 public interface TeamService {
 
@@ -17,6 +14,8 @@ public interface TeamService {
     TeamDetailResponse getTeam(Long teamId);
 
     TeamLeaderTransferResponse transferLeader(Long teamId, Long currentLeaderMemberId, TeamLeaderTransferRequest request);
+
+    TeamListResponse getTeamList();
 
 
 }

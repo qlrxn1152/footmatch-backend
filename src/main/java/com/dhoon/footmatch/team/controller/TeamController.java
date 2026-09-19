@@ -3,10 +3,7 @@ package com.dhoon.footmatch.team.controller;
 import com.dhoon.footmatch.team.dto.request.TeamCreateRequest;
 import com.dhoon.footmatch.team.dto.request.TeamLeaderTransferRequest;
 import com.dhoon.footmatch.team.dto.request.TeamNameChangeRequest;
-import com.dhoon.footmatch.team.dto.response.TeamCreateResponse;
-import com.dhoon.footmatch.team.dto.response.TeamDetailResponse;
-import com.dhoon.footmatch.team.dto.response.TeamLeaderTransferResponse;
-import com.dhoon.footmatch.team.dto.response.TeamNameChangeResponse;
+import com.dhoon.footmatch.team.dto.response.*;
 import com.dhoon.footmatch.team.service.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +49,11 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/api/teams/list")
+    public ResponseEntity<TeamListResponse> getTeamList() {
+        TeamListResponse response = teamService.getTeamList();
 
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
 }

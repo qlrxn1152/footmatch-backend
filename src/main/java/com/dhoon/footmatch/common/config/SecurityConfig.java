@@ -23,7 +23,8 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/members", "/api/auth/login").permitAll() // 회원가입이랑 로그인 요청은 JWT 토큰이 없어도 됨.
-                        .requestMatchers(HttpMethod.GET, "/api/teams/{teamId}", "/api/teams/{teamId}/members").permitAll() // 팀 상세페이지 / 팀원 목록조회는 모든유저가 가능
+                        .requestMatchers(HttpMethod.GET, "/api/teams/{teamId}", "/api/teams/{teamId}/members", "/api/teams/list").permitAll() // 팀 상세페이지 / 팀원 목록조회 / 팀 목록조회는 모든유저가 가능
+                        .requestMatchers(HttpMethod.GET, "/api/members/list").permitAll() // 멤버 목록조회는 누구나 가능
                         .requestMatchers(HttpMethod.GET, "/api/team-matches/pending", "/api/team-matches/matched", "/api/team-matches/completed").permitAll() // 전체 팀의 PENDING, MATCHED, COMPLETED 매치들 조회는 모든유저가 가능
                         .requestMatchers(HttpMethod.GET, "/api/teams/{teamId}/matches/pending", "/api/teams/{teamId}/matches/matched", "/api/teams/{teamId}/matches/completed").permitAll() // 특정 팀의 PENDING, MATCHED, COMPLETED 매치들 조회는 누구나 가능
                         .anyRequest().authenticated() // 나머지는 JWT 토큰 필요

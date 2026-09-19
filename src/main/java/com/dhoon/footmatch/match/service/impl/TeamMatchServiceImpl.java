@@ -171,13 +171,18 @@ public class TeamMatchServiceImpl implements TeamMatchService {
             winnerTeam = match.getAwayTeam();
         }
 
-        // 무승부 => winnerTeam = null ( ? )
-        TeamMatchResult matchResult = TeamMatchResult.of(match, winnerTeam, homeScore, awayScore);
+        List<TeamMatchScorer> matchScorers = request.getScorersRequest().getScorers();
+
+        TeamMatchResult matchResult = TeamMatchResult.of(match, winnerTeam, homeScore, awayScore, matchScorers);
         match.completed();
         teamMatchResultRepository.save(matchResult);
 
         return TeamMatchResultCreateResponse.of(matchResult);
     }
+
+
+
+
 
     @Override
     @Transactional(readOnly = true)

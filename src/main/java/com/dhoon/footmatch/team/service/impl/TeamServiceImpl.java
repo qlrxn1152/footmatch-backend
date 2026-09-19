@@ -6,10 +6,7 @@ import com.dhoon.footmatch.team.domain.Team;
 import com.dhoon.footmatch.team.dto.request.TeamCreateRequest;
 import com.dhoon.footmatch.team.dto.request.TeamLeaderTransferRequest;
 import com.dhoon.footmatch.team.dto.request.TeamNameChangeRequest;
-import com.dhoon.footmatch.team.dto.response.TeamCreateResponse;
-import com.dhoon.footmatch.team.dto.response.TeamDetailResponse;
-import com.dhoon.footmatch.team.dto.response.TeamLeaderTransferResponse;
-import com.dhoon.footmatch.team.dto.response.TeamNameChangeResponse;
+import com.dhoon.footmatch.team.dto.response.*;
 import com.dhoon.footmatch.team.exception.exceptions.AlreadyJoinedTeamException;
 import com.dhoon.footmatch.team.exception.exceptions.SameTeamLeaderException;
 import com.dhoon.footmatch.team.repository.TeamRepository;
@@ -24,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -79,19 +78,20 @@ public class TeamServiceImpl implements TeamService {
         return TeamLeaderTransferResponse.of(context.team(), context.oldLeader(), context.newLeader());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public TeamListResponse getTeamList() {
+        List<TeamListItemResponse> teams = teamRepository.findAllTeamsWithLeaderMember()
+                .stream()
+                .map(team -> {
+                    long memberCount = teamMemberRepository.countByTeamId(team.getId());
 
+                    return TeamListItemResponse.of(team, memberCount);
+                })
+                .toList();
 
-
-
-
-
-
-
-
-
-
-
-
+        return TeamListResponse.of(teams);
+    }
 
 
     // ================================================================== //

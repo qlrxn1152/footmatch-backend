@@ -34,7 +34,6 @@ public class TeamMatchController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-
     @GetMapping("/api/team-matches/{teamId}/request/pendings")
     public ResponseEntity<TeamMatchAcceptRequestsResponse> getTeamPendingMatchAcceptRequests(@PathVariable Long teamId, @AuthenticationPrincipal Jwt jwt) {
         TeamMatchAcceptRequestsResponse response = teamMatchService.getTeamMatchAcceptRequests(teamId, Long.valueOf(jwt.getSubject()));
@@ -101,13 +100,14 @@ public class TeamMatchController {
 
 
 
-    
-    @PostMapping("/api/team-matches/{matchId}/result")
-    public ResponseEntity<TeamMatchResultCreateResponse> createTeamMatchResult(@PathVariable Long matchId, @Valid @RequestBody TeamMatchResultCreateRequest request) {
+
+
+
+    @PostMapping("/api/team-matches/{matchId}/result/score")
+    public ResponseEntity<TeamMatchResultCreateResponse> createTeamMatchResultScore(@PathVariable Long matchId, @Valid @RequestBody TeamMatchResultCreateRequest request) {
         TeamMatchResultCreateResponse response = teamMatchService.createTeamMatchResult(matchId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
 
 }

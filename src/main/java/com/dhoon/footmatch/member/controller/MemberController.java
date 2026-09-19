@@ -2,6 +2,8 @@ package com.dhoon.footmatch.member.controller;
 
 import com.dhoon.footmatch.member.dto.request.MemberCreateRequest;
 import com.dhoon.footmatch.member.dto.response.MemberCreateResponse;
+import com.dhoon.footmatch.member.dto.response.MemberListItemResponse;
+import com.dhoon.footmatch.member.dto.response.MemberListResponse;
 import com.dhoon.footmatch.member.dto.response.MemberMeResponse;
 import com.dhoon.footmatch.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -38,5 +40,13 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/api/members/list")
+    public ResponseEntity<MemberListResponse> getMemberList() {
+        MemberListResponse response = memberService.getMemberList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
 }

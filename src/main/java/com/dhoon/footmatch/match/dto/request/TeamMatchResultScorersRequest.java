@@ -1,7 +1,6 @@
 package com.dhoon.footmatch.match.dto.request;
 
 import com.dhoon.footmatch.match.domain.TeamMatchScorer;
-import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,16 +12,9 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class TeamMatchResultCreateRequest {
+public class TeamMatchResultScorersRequest {
 
-    @Min(0)
-    private int homeScore;
-
-    @Min(0)
-    private int awayScore;
+    private List<TeamMatchScorer> scorers = new ArrayList<>();
 
 
-    public static TeamMatchResultCreateRequest of(int homeScore, int awayScore) {
-        return new TeamMatchResultCreateRequest(homeScore, awayScore);
-    }
 }
